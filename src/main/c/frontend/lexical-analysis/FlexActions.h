@@ -25,8 +25,41 @@ void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerC
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token IdLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token IntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token SpecificDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+
+Token ProjectLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token FormatLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token DateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token HourLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token DayLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MonthLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token WeekLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token BracketsLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token TaskLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token LengthLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token StartLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token FinishLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token CategoriesLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token CategoryLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token DependsOnLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token DependsOnProjectLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MaxPointsLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token PointsLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token UniqueLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MaxTasksLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token WithLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token ProjectStartLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token CommaLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token DotLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+
+
+
+
+Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);

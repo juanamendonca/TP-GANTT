@@ -11,6 +11,8 @@
 
 	int integer;
 	Token token;
+	char *string;
+	// Interval *interval;
 
 	/** Non-terminals. */
 
@@ -36,12 +38,36 @@
 
 /** Terminals. */
 %token <integer> INTEGER
-%token <token> ADD
-%token <token> CLOSE_PARENTHESIS
-%token <token> DIV
-%token <token> MUL
-%token <token> OPEN_PARENTHESIS
-%token <token> SUB
+%token <string> STRING
+%token <string> ID
+%token <string> INTERVAL
+%token <string> SPECIFIC_DATE
+
+%token <token> PROJECT
+%token <token> FORMAT
+%token <token> DATE
+%token <token> HOUR
+%token <token> DAY
+%token <token> WEEK
+%token <token> MONTH
+%token <token> OPEN_BRACKET
+%token <token> CLOSE_BRACKET
+%token <token> TASK
+%token <token> LENGTH
+%token <token> START
+%token <token> FINISH
+%token <token> CATEGORIES
+%token <token> CATEGORY
+%token <token> DEPENDS_ON
+%token <token> DOT
+%token <token> MAX_POINTS
+%token <token> POINTS 
+%token <token> UNIQUE 
+%token <token> MAX_TASKS
+%token <token> PROJECT_START 
+%token <token> COMMA
+%token <token> DEPENDS_ON_PROJECT
+%token <token> WITH
 
 %token <token> UNKNOWN
 
