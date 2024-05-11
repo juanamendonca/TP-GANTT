@@ -1,0 +1,5 @@
+project 7 "Proyecto7" format month {
+    task 1 "Tarea1" length [2-3]
+    task 2 "Tarea2" length [3-4] unique
+    task 3 "Tarea3" length [1-2]
+}

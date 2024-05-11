@@ -1,0 +1,5 @@
+project 4 "Proyecto4" format day {
+    categories 1 "Categoría1", 2 "Categoría2", 3 "Categoría3"
+    task 1 "Tarea6" length [1-3] category 1 
+    task 2 "Tarea7" length [2-4] category 2
+}

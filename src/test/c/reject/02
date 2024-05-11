@@ -1,0 +1,3 @@
+project 2 "Proyecto2" format date {
+    task 1 "Tarea2" finish 2024-04-01 start 2024-04-05
+}

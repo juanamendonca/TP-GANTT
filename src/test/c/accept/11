@@ -1,0 +1,13 @@
+project 12 "ProyectoPadre" format days {
+    task 1 "TareaInicial" length [2-3]
+    task 2 "TareaIntermedia" length [3-5] depends_on 12.1
+}
+
+project 13 "ProyectoHijo" format days depends_on_project 12 {
+    task 1 "TareaHijo1" length [2-3]
+    task 2 "TareaHijo2" length [3-5] depends_on 13.1 
+    task 3 "TareaHijo3" length [1-2] depends_on 13.2 
+}
+
+
+project 14 "UnionDeProyectos" format days with 12,13 { }

@@ -129,12 +129,12 @@
 
 %%
 
-program: projectStructure
-	| program projectStructure
+program: projectStructure												{ $$ = ProjectStructureProgramSemanticAction(currentCompilerState(), $1); }
+	| program projectStructure											{ $$ = ProjectStructureRecursiveProgramSemanticAction($1, $2); }
 	;
 
-projectStructure: PROJECT ID NAME FORMAT formatType projectBody
-	| PROJECT ID NAME FORMAT formatType projectOptionals projectBody
+projectStructure: PROJECT ID NAME FORMAT formatType projectBody			{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }
+	| PROJECT ID NAME FORMAT formatType projectOptionals projectBody    { $$ = OptionalsProjectStructureSemanticAction($2, $3, $6, $7); } 
 	;
 
 formatType: HOUR
@@ -144,69 +144,72 @@ formatType: HOUR
 	| DATE
 	;
 
-projectOptionals: DEPENDS_ON_PROJECT ID
-	| WITH ID projectUnion
-	| DEPENDS_ON_PROJECT ID WITH ID projectUnion
+projectOptionals: DEPENDS_ON_PROJECT ID									{ $$ = IdOptionalsSemanticAction($2); } 
+	| WITH ID projectUnion												{ $$ = ProjectUnionOptionalsSemanticAction($2, $3); } 
+	| DEPENDS_ON_PROJECT ID WITH ID projectUnion						{ $$ = BothOptionalsSemanticAction($2, $4, $5); } 
 	;
 
 projectUnion: 
-	| projectUnion COMMA ID
+	| projectUnion COMMA ID												{ $$ = IdProjectUnionSemanticAction($1, $3); } 
 	;
 
-projectBody: OPEN_BRACKET taskList CLOSE_BRACKET
-	| OPEN_BRACKET projectBodyOptionals taskList CLOSE_BRACKET
+projectBody: OPEN_BRACKET CLOSE_BRACKET
+	| OPEN_BRACKET taskList CLOSE_BRACKET								{ $$ = taskListProjectBodySemanticAction($2); }
+	| OPEN_BRACKET projectBodyOptionals taskList CLOSE_BRACKET			{ $$ = optionalsProjectBodySemanticAction($2, $3); }
 	;
 
-taskList: taskStructure
-	| taskList taskStructure
+taskList: taskStructure													{ $$ = structureListSemanticAction($1); }
+	| taskList taskStructure											{ $$ = structureRecursiveListSemanticAction($1, $2); }
 	;
 
-taskStructure: TASK ID NAME taskLengthFormat
-	| TASK ID NAME taskLengthFormat taskOptionals
+taskStructure: TASK ID NAME taskLengthFormat							{ $$ = lengthFormatStructureSemanticAction($2, $3, $4); }
+	| TASK ID NAME taskLengthFormat taskOptionals						{ $$ = optionalsStructureSemanticAction($2, $3, $4, $5); }
 	;
 
-taskLengthFormat: START SPECIFIC_DATE FINISH SPECIFIC_DATE
-	| LENGTH INTERVAL
+taskLengthFormat: START SPECIFIC_DATE FINISH SPECIFIC_DATE				{ $$ = dateLengthFormatSemanticAction($2, $4); }
+	| LENGTH INTERVAL													{ $$ = intervalLengthFormatSemanticAction($2); }
 	;
 
-taskOptionals: CATEGORY ID
-	| POINTS INTEGER
-	| DEPENDS_ON ID DOT ID taskOptionDependsOn
-	| UNIQUE
-	| CATEGORY ID POINTS INTEGER
-	| CATEGORY ID DEPENDS_ON ID DOT ID taskOptionDependsOn
-	| CATEGORY ID UNIQUE
-	| POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn
-	| POINTS INTEGER UNIQUE
-	| DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE
-	| CATEGORY ID POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn
-	| CATEGORY ID DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE
-	| POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE
-	| CATEGORY ID POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE
+taskOptionals: CATEGORY ID												{ $$ = oneTaskOptionalsSemanticAction($2, CATEGORY); }
+	| POINTS INTEGER													{ $$ = twoTaskOptionalsSemanticAction($2, POINTS); }
+	| DEPENDS_ON ID DOT ID taskOptionDependsOn							{ $$ = threeTaskOptionalsSemanticAction($2, $4, $5, DEPENDS); }
+	| UNIQUE															
+	| CATEGORY ID POINTS INTEGER										{ $$ = fourTaskOptionalsSemanticAction($2, $4, CATEGORY_POINTS); }
+	| CATEGORY ID DEPENDS_ON ID DOT ID taskOptionDependsOn				{ $$ = fiveTaskOptionalsSemanticAction($2, $4, $6, $7, CATEGORY_DEPENDS); }
+	| CATEGORY ID UNIQUE												{ $$ = oneTaskOptionalsSemanticAction($2, CATEGORY_UNIQUE); }
+	| POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn			{ $$ = sixTaskOptionalsSemanticAction($2, $4, $6, $7, POINTS_DEPENDS); }
+	| POINTS INTEGER UNIQUE												{ $$ = twoTaskOptionalsSemanticAction($2, POINTS_UNIQUE); }
+	| DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE					{ $$ = threeTaskOptionalsSemanticAction($2, $4, $5, DEPENDS_UNIQUE); }
+	| CATEGORY ID POINTS INTEGER UNIQUE									{ $$ = fourTaskOptionalsSemanticAction($2, $4, CATEGORY_POINTS_UNIQUE); }
+	| CATEGORY ID POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn	{ $$ = sevenTaskOptionalsSemanticAction($2, $4, $6, $8, $9,CATEGORY_POINTS_DEPENDS); }
+	| CATEGORY ID DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE		{ $$ = fiveTaskOptionalsSemanticAction($2, $4, $6, $7, CATEGORY_DEPENDS_UNIQUE); }
+	| POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE	{ $$ = sixTaskOptionalsSemanticAction($2, $4, $6, $7, POINTS_DEPENDS_UNIQUE); }
+	| CATEGORY ID POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE	{ $$ = sevenTaskOptionalsSemanticAction($2, $4, $6, $8, $9,CATEGORY_POINTS_DEPENDS_UNIQUE); }                             
 	;
 
 taskOptionDependsOn:
-	| taskOptionDependsOn COMMA ID DOT ID
+	| taskOptionDependsOn COMMA ID DOT ID																		{ $$ = TaskOptionDependsOnSemanticAction($2,$4); }
 	;
 
-projectBodyOptionals: MAX_TASKS INTEGER
-	| CATEGORIES ID NAME bodyCategoriesOption
-	| MAX_POINTS INTEGER
-	| PROJECT_START SPECIFIC_DATE
-	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption
-	| MAX_TASKS INTEGER MAX_POINTS INTEGER
-	| MAX_TASKS INTEGER PROJECT_START SPECIFIC_DATE
-	| CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER
-	| CATEGORIES ID NAME bodyCategoriesOption PROJECT_START SPECIFIC_DATE
-	| MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE
-	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER
-	| MAX_TASKS INTEGER MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE
-	| CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE
-	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE
+projectBodyOptionals: MAX_TASKS INTEGER																			{ $$ = OneBodyOptionalsSemanticAction($2); }	
+	| CATEGORIES ID NAME bodyCategoriesOption																	{ $$ = TwoBodyOptionalsSemanticAction($2,$3,$4); }	
+	| MAX_POINTS INTEGER																						{ $$ = ThreeBodyOptionalsSemanticAction($2); }	
+	| PROJECT_START SPECIFIC_DATE																				{ $$ = FourBodyOptionalsSemanticAction($2); }	
+	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption													{ $$ = FiveBodyOptionalsSemanticAction($2,$4,$5,$6); }	
+	| MAX_TASKS INTEGER MAX_POINTS INTEGER																		{ $$ = SixBodyOptionalsSemanticAction($2,$4); }			
+	| MAX_TASKS INTEGER PROJECT_START SPECIFIC_DATE																{ $$ = SevenBodyOptionalsSemanticAction($2,$4); }
+	| CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER												{ $$ = EightBodyOptionalsSemanticAction($2,$3,,$4,$5); }
+	| CATEGORIES ID NAME bodyCategoriesOption PROJECT_START SPECIFIC_DATE										{ $$ = NineBodyOptionalsSemanticAction($2,$3,$4,$6); }
+	| MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE															{ $$ = TenBodyOptionalsSemanticAction($2,$4); }
+	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER								{ $$ = ElevenBodyOptionalsSemanticAction($2,$4,$5,$6,$7); }
+	| MAX_TASKS INTEGER MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE											{ $$ = TwelveBodyOptionalsSemanticAction($2,$4,$6); }
+	| CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE 					{ $$ = ThirteenBodyOptionalsSemanticAction($2,$3,$4,$6,$8); }
+	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE  { $$ = FourteenBodyOptionalsSemanticAction($2,$4,$5,$6,$8,$9); }
+	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption PROJECT_START SPECIFIC_DATE						{ $$ = FifthteenBodyOptionalsSemanticAction($2,$4,$5,$6,$8);}
 	;
 
-bodyCategoriesOption:
-	| COMMA ID NAME
+bodyCategoriesOption: 
+	| bodyCategoriesOption COMMA ID NAME 																		{ $$ = RecursiveCategoriesOptionSemanticAction($3, $4); }
 	;
 
 
