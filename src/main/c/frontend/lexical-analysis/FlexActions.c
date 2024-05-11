@@ -60,10 +60,10 @@ Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	return INTEGER;
 }
 
-Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token NameLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->string = lexicalAnalyzerContext->lexeme;
-	return STRING;
+	return NAME;
 }
 
 Token IdLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {

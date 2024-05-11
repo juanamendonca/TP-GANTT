@@ -35,7 +35,7 @@
 
 
 
-\"[[:alnum:]]+\"                    { return StringLexemeAction(createLexicalAnalyzerContext())}
+\"[[:alnum:]]+\"                    { return NameLexemeAction(createLexicalAnalyzerContext())}
 
 [[:alnum:]]+                        { return IdLexemeAction(createLexicalAnalyzerContext())}
 

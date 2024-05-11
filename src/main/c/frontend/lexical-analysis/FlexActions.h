@@ -26,7 +26,7 @@ void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCon
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token NameLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token IdLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token IntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token SpecificDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
