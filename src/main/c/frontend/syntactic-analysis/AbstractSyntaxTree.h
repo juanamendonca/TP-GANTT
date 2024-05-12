@@ -49,8 +49,8 @@ enum OptionalsType {
 };
 
 enum ProjectOptionalsType{
-	DEPENDS_ON,
-	WITH,
+	DEPENDS_ON_P,
+	WITH_P,
 	BOTH
 };
 
@@ -60,10 +60,9 @@ enum TaskLengthFormatType{
 };
 
 enum TaskOptionalsType{
-	CATEGORY,
-	POINTS,
+	CATEGORYTASK,
+	POINTSTASK,
 	DEPENDS,
-	UNIQUE,
 	CATEGORY_POINTS,
 	CATEGORY_DEPENDS,
 	CATEGORY_UNIQUE,
@@ -78,10 +77,10 @@ enum TaskOptionalsType{
 };
 
 enum ProjectBodyOptionalsType{
-	TASKS,
-	CATEGORIES,
-	POINTS,
-	START,
+	TASKSBODY,
+	CATEGORIESBODY,
+	POINTSBODY,
+	STARTBODY,
 	TASKS_CATEGORIES,
 	TASKS_POINTS,
 	TASKS_START,

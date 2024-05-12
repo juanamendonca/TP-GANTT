@@ -18,7 +18,7 @@ void shutdownBisonActionsModule();
  * Bison semantic actions.
  */
 
-TaskOptionals * sevenTaskOptionalsSemanticAction(char * id, int points, char * id2, char * id3, TaskOptionDependsOn * taskOptionDependsOn, CATEGORY_POINTS_DEPENDS);
+TaskOptionals * sevenTaskOptionalsSemanticAction(char * id1, int points, char * id2, char * id3, TaskOptionDependsOn * taskOptionDependsOn, TaskOptionalsType type);
 TaskOptionals * sixTaskOptionalsSemanticAction(int points, char * id1, char * id2, TaskOptionDependsOn * taskOptionDependsOn, TaskOptionalsType type);
 TaskOptionals * fiveTaskOptionalsSemanticAction(char * id1, char * id2, char * id3, TaskOptionDependsOn * taskOptionDependsOn, TaskOptionalsType type);
 TaskOptionals * fourTaskOptionalsSemanticAction(char * id, int points, TaskOptionalsType type);
@@ -50,7 +50,7 @@ TaskOptionDependsOn * TaskOptionDependsOnSemanticAction(char * id, char * id2);
 
 ProjectBodyOptionals * OneBodyOptionalsSemanticAction(int maxTasks);
 ProjectBodyOptionals * TwoBodyOptionalsSemanticAction( char * id, char * name, BodyCategoriesOption * bodyCategoriesOption);
-ProjectBodyOptionals * ThreeBodyOptionalsSemanticAction(int maxPoints):
+ProjectBodyOptionals * ThreeBodyOptionalsSemanticAction(int maxPoints);
 ProjectBodyOptionals * FourBodyOptionalsSemanticAction(char * startDate);
 ProjectBodyOptionals * FiveBodyOptionalsSemanticAction(int maxTasks,  char * id, char * name, BodyCategoriesOption * bodyCategoriesOption);
 ProjectBodyOptionals * SixBodyOptionalsSemanticAction(int maxTasks, int maxPoints);

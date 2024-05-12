@@ -16,28 +16,16 @@
 	/** Non-terminals. */
 
 	ProjectStructure * projectStructure;
-	FormatType * formatType;
 	ProjectOptionals * projectOptionals;
-	ProjectDependencies * projectDependencies;
 	ProjectUnion * projectUnion;
-	ProjectDependenciesUnion * projectDependenciesUnion;
 	ProjectBody * projectBody;
 	TaskStructure * taskStructure;
 	ProjectBodyOptionals * projectBodyOptionals;
-	BodyMaxTasksOption * bodyMaxTasksOption;
 	BodyCategoriesOption * bodyCategoriesOption;
-	BodyMaxPointsOption * bodyMaxPointsOption;
-	BodyProjectStart * bodyProjectStart;
 	TaskList * taskList;
 	TaskLengthFormat * taskLengthFormat;
-	TaskLengthStartEnd * taskLengthStartEnd;
-	TaskLengthInterval * taskLengthInterval;
 	TaskOptionals * taskOptionals;
-	TaskOptionCategories * taskOptionCategiores;
-	TaskOptionPoints * taskOptionPoints;
 	TaskOptionDependsOn * taskOptionDependsOn;
-	TaskOptionDependsOnInternalTask * taskOptionDependsOnInternalTask;
-	TaskOptionDependsOnExternalTask * taskOptionDependsOnExternalTask;
 	Program * program;
 }
 
@@ -93,28 +81,16 @@
 /** Non-terminals. */
 
 %type <projectStructure> projectStructure
-%type <formatType> formatType
 %type <projectOptionals> projectOptionals
-%type <projectDependencies> projectDependencies
 %type <projectUnion> projectUnion
-%type <projectDependenciesUnion> projectDependenciesUnion
 %type <projectBody> projectBody
 %type <taskStructure> taskStructure
 %type <projectBodyOptionals> projectBodyOptionals
-%type <bodyMaxTasksOption> bodyMaxTasksOption
 %type <bodyCategoriesOption> bodyCategoriesOption
-%type <bodyMaxPointsOption> bodyMaxPointsOption
-%type <bodyProjectStart> bodyProjectStart
 %type <taskList> taskList
 %type <taskLengthFormat> taskLengthFormat
-%type <taskLengthStartEnd> taskLengthStartEnd
-%type <taskLengthInterval> taskLengthInterval
 %type <taskOptionals> taskOptionals
-%type <taskOptionCategiores> taskOptionCategiores
-%type <taskOptionPoints> taskOptionPoints
 %type <taskOptionDependsOn> taskOptionDependsOn
-%type <taskOptionDependsOnInternalTask>  taskOptionDependsOnInternalTask
-%type <taskOptionDependsOnExternalTask>  taskOptionDependsOnExternalTask
 %type <program> program
 
 
@@ -130,18 +106,20 @@
 %%
 
 program: projectStructure												{ $$ = ProjectStructureProgramSemanticAction(currentCompilerState(), $1); }
-	| program projectStructure											{ $$ = ProjectStructureRecursiveProgramSemanticAction($1, $2); }
+	//| program projectStructure											{ $$ = ProjectStructureRecursiveProgramSemanticAction($1, $2); }
 	;
 
-projectStructure: PROJECT ID NAME FORMAT formatType projectBody			{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }
-	| PROJECT ID NAME FORMAT formatType projectOptionals projectBody    { $$ = OptionalsProjectStructureSemanticAction($2, $3, $6, $7); } 
-	;
-
-formatType: HOUR
-	| DAY
-	| WEEK
-	| MONTH
-	| DATE
+projectStructure: PROJECT ID NAME FORMAT HOUR projectBody			{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }
+	| PROJECT ID NAME FORMAT HOUR projectOptionals projectBody      { $$ = OptionalsProjectStructureSemanticAction($2, $3, $6, $7); } 
+	| PROJECT ID NAME FORMAT DAY projectBody						{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }
+	| PROJECT ID NAME FORMAT DAY projectOptionals projectBody		{ $$ = OptionalsProjectStructureSemanticAction($2, $3, $6, $7); } 
+	| PROJECT ID NAME FORMAT WEEK projectBody						{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }
+	| PROJECT ID NAME FORMAT WEEK projectOptionals projectBody		{ $$ = OptionalsProjectStructureSemanticAction($2, $3, $6, $7); } 
+	| PROJECT ID NAME FORMAT MONTH projectBody						{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }
+	| PROJECT ID NAME FORMAT MONTH projectOptionals projectBody		{ $$ = OptionalsProjectStructureSemanticAction($2, $3, $6, $7); } 
+	| PROJECT ID NAME FORMAT DATE projectBody						{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }
+	| PROJECT ID NAME FORMAT DATE projectOptionals projectBody		{ $$ = OptionalsProjectStructureSemanticAction($2, $3, $6, $7); } 
+	
 	;
 
 projectOptionals: DEPENDS_ON_PROJECT ID									{ $$ = IdOptionalsSemanticAction($2); } 
@@ -170,8 +148,8 @@ taskLengthFormat: START SPECIFIC_DATE FINISH SPECIFIC_DATE				{ $$ = dateLengthF
 	| LENGTH INTERVAL													{ $$ = intervalLengthFormatSemanticAction($2); }
 	;
 
-taskOptionals: CATEGORY ID												{ $$ = oneTaskOptionalsSemanticAction($2, CATEGORY); }
-	| POINTS INTEGER													{ $$ = twoTaskOptionalsSemanticAction($2, POINTS); }
+taskOptionals: CATEGORY ID												{ $$ = oneTaskOptionalsSemanticAction($2, CATEGORYTASK); }
+	| POINTS INTEGER													{ $$ = twoTaskOptionalsSemanticAction($2, POINTSTASK); }
 	| DEPENDS_ON ID DOT ID taskOptionDependsOn							{ $$ = threeTaskOptionalsSemanticAction($2, $4, $5, DEPENDS); }
 	| UNIQUE															
 	| CATEGORY ID POINTS INTEGER										{ $$ = fourTaskOptionalsSemanticAction($2, $4, CATEGORY_POINTS); }
@@ -188,7 +166,7 @@ taskOptionals: CATEGORY ID												{ $$ = oneTaskOptionalsSemanticAction($2, 
 	;
 
 taskOptionDependsOn:
-	| taskOptionDependsOn COMMA ID DOT ID																		{ $$ = TaskOptionDependsOnSemanticAction($2,$4); }
+	| taskOptionDependsOn COMMA ID DOT ID																		{ $$ = TaskOptionDependsOnSemanticAction($3,$5); }
 	;
 
 projectBodyOptionals: MAX_TASKS INTEGER																			{ $$ = OneBodyOptionalsSemanticAction($2); }	
@@ -198,16 +176,15 @@ projectBodyOptionals: MAX_TASKS INTEGER																			{ $$ = OneBodyOptional
 	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption													{ $$ = FiveBodyOptionalsSemanticAction($2,$4,$5,$6); }	
 	| MAX_TASKS INTEGER MAX_POINTS INTEGER																		{ $$ = SixBodyOptionalsSemanticAction($2,$4); }			
 	| MAX_TASKS INTEGER PROJECT_START SPECIFIC_DATE																{ $$ = SevenBodyOptionalsSemanticAction($2,$4); }
-	| CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER												{ $$ = EightBodyOptionalsSemanticAction($2,$3,,$4,$5); }
+	| CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER												{ $$ = EightBodyOptionalsSemanticAction($2,$3,$4,$5); }
 	| CATEGORIES ID NAME bodyCategoriesOption PROJECT_START SPECIFIC_DATE										{ $$ = NineBodyOptionalsSemanticAction($2,$3,$4,$6); }
 	| MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE															{ $$ = TenBodyOptionalsSemanticAction($2,$4); }
 	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER								{ $$ = ElevenBodyOptionalsSemanticAction($2,$4,$5,$6,$7); }
 	| MAX_TASKS INTEGER MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE											{ $$ = TwelveBodyOptionalsSemanticAction($2,$4,$6); }
 	| CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE 					{ $$ = ThirteenBodyOptionalsSemanticAction($2,$3,$4,$6,$8); }
-	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE  { $$ = FourteenBodyOptionalsSemanticAction($2,$4,$5,$6,$8,$9); }
+	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE  { $$ = FourteenBodyOptionalsSemanticAction($2,$4,$5,$6,$8,$10); }
 	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption PROJECT_START SPECIFIC_DATE						{ $$ = FifthteenBodyOptionalsSemanticAction($2,$4,$5,$6,$8);}
 	;
-
 bodyCategoriesOption: 
 	| bodyCategoriesOption COMMA ID NAME 																		{ $$ = RecursiveCategoriesOptionSemanticAction($3, $4); }
 	;

@@ -31,7 +31,7 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 
 /* PUBLIC FUNCTIONS */
 
-TaskOptionals * sevenTaskOptionalsSemanticAction(char * id, int points, char * id2, char * id3, TaskOptionDependsOn * taskOptionDependsOn, CATEGORY_POINTS_DEPENDS){
+TaskOptionals * sevenTaskOptionalsSemanticAction(char * id1, int points, char * id2, char * id3, TaskOptionDependsOn * taskOptionDependsOn, TaskOptionalsType type){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TaskOptionals * taskOptionals = calloc(1,sizeof(TaskOptionals));
 	taskOptionals->id1 = id1;
@@ -195,7 +195,7 @@ ProjectOptionals * ProjectUnionOptionalsSemanticAction(char * id, ProjectUnion *
 	ProjectOptionals * projectOptionals = calloc(1,sizeof(ProjectOptionals));
 	projectOptionals->id1 = id;
 	projectOptionals->projectUnion = projectUnion;
-	projectOptionals->type = WITH;
+	projectOptionals->type = WITH_P;
 	return projectOptionals;
 }
 
@@ -203,7 +203,7 @@ ProjectOptionals * IdOptionalsSemanticAction(char * id){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ProjectOptionals * projectOptionals = calloc(1,sizeof(ProjectOptionals));
 	projectOptionals->id1 = id;
-	projectOptionals->type = DEPENDS_ON;
+	projectOptionals->type = DEPENDS_ON_P;
 	return projectOptionals;
 }
 
@@ -254,32 +254,9 @@ Program * ProjectStructureProgramSemanticAction(CompilerState * compilerState, P
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 TaskOptionDependsOn * TaskOptionDependsOnSemanticAction(char * id, char * id2){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	TaskOptionDependsOn * taskOptionDependsOn = calloc(1, sizeOf(TaskOptionDependsOn));
+	TaskOptionDependsOn * taskOptionDependsOn = calloc(1, sizeof(TaskOptionDependsOn));
 	taskOptionDependsOn->id=id;
 	taskOptionDependsOn->id2=id2;
 	return taskOptionDependsOn;
@@ -289,7 +266,7 @@ ProjectBodyOptionals * OneBodyOptionalsSemanticAction(int maxTasks){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ProjectBodyOptionals * projectBodyOptionals = calloc(1, sizeof(ProjectBodyOptionals));
 	projectBodyOptionals->maxTasks = maxTasks;
-	projectBodyOptionals->type=TASKS;
+	projectBodyOptionals->type=TASKSBODY;
 	return projectBodyOptionals;
 }
 
@@ -299,7 +276,7 @@ ProjectBodyOptionals * TwoBodyOptionalsSemanticAction( char * id, char * name, B
 	projectBodyOptionals->id = id;
 	projectBodyOptionals->name = name;
 	projectBodyOptionals->bodyCategoriesOption = bodyCategoriesOption;
-	projectBodyOptionals->type=CATEGORIES;
+	projectBodyOptionals->type=CATEGORIESBODY;
 	return projectBodyOptionals;
 }
 
@@ -307,7 +284,7 @@ ProjectBodyOptionals * ThreeBodyOptionalsSemanticAction(int maxPoints){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ProjectBodyOptionals * projectBodyOptionals = calloc(1, sizeof(ProjectBodyOptionals));
 	projectBodyOptionals->maxPoints = maxPoints;
-	projectBodyOptionals->type=POINTS;
+	projectBodyOptionals->type=POINTSBODY;
 	return projectBodyOptionals;
 }
 
@@ -315,7 +292,7 @@ ProjectBodyOptionals * FourBodyOptionalsSemanticAction(char * startDate){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ProjectBodyOptionals * projectBodyOptionals = calloc(1, sizeof(ProjectBodyOptionals));
 	projectBodyOptionals->startDate=startDate;
-	projectBodyOptionals->type=START;
+	projectBodyOptionals->type=STARTBODY;
 	return projectBodyOptionals;
 }
 
@@ -453,7 +430,7 @@ ProjectBodyOptionals * FifthteenBodyOptionalsSemanticAction(int maxTasks,  char 
 
 BodyCategoriesOption * RecursiveCategoriesOptionSemanticAction(char * id, char * name){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	BodyCategoriesOption * bodyCategoriesOption = calloc(1,sizeOf(BodyCategoriesOption));
+	BodyCategoriesOption * bodyCategoriesOption = calloc(1,sizeof(BodyCategoriesOption));
 	bodyCategoriesOption->id=id;
 	bodyCategoriesOption->name=name;
 	return bodyCategoriesOption;

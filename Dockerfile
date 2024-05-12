@@ -7,8 +7,9 @@ SHELL [ "/bin/bash", "-c" ]
 # Create 'ubuntu' password-less administrator user and go home.
 RUN apt-get update --yes
 RUN apt-get install sudo --yes
-RUN groupadd ubuntu
-RUN useradd --create-home --home-dir /home/ubuntu --gid sudo --groups ubuntu --shell /bin/bash ubuntu
+RUN getent group ubuntu || groupadd ubuntu
+RUN id -u ubuntu &>/dev/null || useradd --create-home --home-dir /home/ubuntu --gid sudo --groups ubuntu --shell /bin/bash ubuntu
+RUN echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu
 RUN passwd --delete ubuntu
 USER ubuntu:ubuntu
 WORKDIR /home/ubuntu
