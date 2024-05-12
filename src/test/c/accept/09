@@ -1,11 +1,11 @@
-project 9 "ProyectoComplejo" format day {
+project a "ProyectoComplejo" format day {
     max_tasks 5
+    categories a "Desarrollo", b "Pruebas", c "Implementación"
     project_start 2024-04-01 
-    categories 1 "Desarrollo",2 "Pruebas", 3 "Implementación"
-    task 1 "Diseño de la interfaz" length [2] category 1 points 1
-    task 2 "Desarrollo del backend" length [3] category 2 points 2
-    task 3 "Configuración del entorno de pruebas" length [1] category 2 points 2
-    task 4 "Ejecución de pruebas unitarias" length [2] category 2 points 4 depends_on 3
-    task 5 "Implementación de la funcionalidad principal" length [4] category 3 points [6] depends_on 9.2
-    task 6 "Pruebas de integración" length [2] category 2 points 4 depends_on 4,5
+    task a "Diseño de la interfaz" length [2] category a points 1
+    task b "Desarrollo del backend" length [3] category b points 2
+    task c "Configuración del entorno de pruebas" length [1] category b points 2
+    task d "Ejecución de pruebas unitarias" length [2] category b points 4 depends_on a.c
+    task e "Implementación de la funcionalidad principal" length [4] category c points 6 depends_on a.b
+    task f "Pruebas de integración" length [2] category b points 4 depends_on a.d, a.e
 }

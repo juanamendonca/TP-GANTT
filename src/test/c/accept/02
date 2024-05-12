@@ -1,4 +1,4 @@
-project 2 "Proyecto2" format date {
-    task 1 "Tarea2" start 2024-04-01 finish 2024-04-05
+project a "Proyecto2" format date {
+    task a "Tarea2" start 2024-04-01 finish 2024-04-05
 }
 

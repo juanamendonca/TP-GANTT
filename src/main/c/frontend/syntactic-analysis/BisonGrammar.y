@@ -106,7 +106,7 @@
 %%
 
 program: projectStructure												{ $$ = ProjectStructureProgramSemanticAction(currentCompilerState(), $1); }
-	//| program projectStructure											{ $$ = ProjectStructureRecursiveProgramSemanticAction($1, $2); }
+	| program projectStructure											{ $$ = ProjectStructureRecursiveProgramSemanticAction($1, $2); }
 	;
 
 projectStructure: PROJECT ID NAME FORMAT HOUR projectBody			{ $$ = ProjectBodyProjectStructureSemanticAction($2, $3, $6); }

@@ -31,19 +31,6 @@
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-[[:digit:]]+						{ return IntegerLexemeAction(createLexicalAnalyzerContext()); }
-
-
-
-\"[[:alnum:]]+\"                    { return NameLexemeAction(createLexicalAnalyzerContext());}
-
-[[:alnum:]]+                        { return IdLexemeAction(createLexicalAnalyzerContext());}
-
-\[[[:digit:]]+"-"[[:digit:]]+\]|\[[[:digit:]]+\] {return IntervalLexemeAction(createLexicalAnalyzerContext());}
-
-[[:digit:]]{4}\-((0[1-9])|(1[0-2]))\-((0[1-9])|([12][0-9])|(3[01])) {return SpecificDateLexemeAction(createLexicalAnalyzerContext());}
-
-
 "project"                           { return ProjectLexemeAction(createLexicalAnalyzerContext());}
 "format"                            { return FormatLexemeAction(createLexicalAnalyzerContext());}
 "date"                              { return DateLexemeAction(createLexicalAnalyzerContext());}
@@ -57,8 +44,8 @@
 "finish"                            { return FinishLexemeAction(createLexicalAnalyzerContext());}
 "categories"                        { return CategoriesLexemeAction(createLexicalAnalyzerContext());}
 "category"                          { return CategoryLexemeAction(createLexicalAnalyzerContext());}
+"depends_on_project"                 { return DependsOnProjectLexemeAction(createLexicalAnalyzerContext());}
 "depends_on"                        { return DependsOnLexemeAction(createLexicalAnalyzerContext());}
-"depens_on_project"                 { return DependsOnProjectLexemeAction(createLexicalAnalyzerContext());}
 "max_points"                        { return MaxPointsLexemeAction(createLexicalAnalyzerContext());}
 "points"                            { return PointsLexemeAction(createLexicalAnalyzerContext());}
 "unique"                            { return UniqueLexemeAction(createLexicalAnalyzerContext());}
@@ -71,6 +58,21 @@
 "."                                 { return DotLexemeAction(createLexicalAnalyzerContext());}
 "{"                                 { return BracketsLexemeAction(createLexicalAnalyzerContext());}
 "}"                                 { return BracketsLexemeAction(createLexicalAnalyzerContext());}
+
+
+[[:digit:]]+						{ return IntegerLexemeAction(createLexicalAnalyzerContext()); }
+
+
+
+\"[[:alnum:]áéíóúÁÉÍÓÚñÑ[:space:]]+\"                    { return NameLexemeAction(createLexicalAnalyzerContext());}
+
+[[:alpha:]]+                        { return IdLexemeAction(createLexicalAnalyzerContext());}
+
+\[[[:digit:]]+"-"[[:digit:]]+\]|\[[[:digit:]]+\] {return IntervalLexemeAction(createLexicalAnalyzerContext());}
+
+[[:digit:]]{4}\-((0[1-9])|(1[0-2]))\-((0[1-9])|([12][0-9])|(3[01])) {return SpecificDateLexemeAction(createLexicalAnalyzerContext());}
+
+
 
 [[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 

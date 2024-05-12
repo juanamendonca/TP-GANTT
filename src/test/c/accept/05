@@ -1,4 +1,4 @@
-project 5 "Proyecto5" format month {
-    task 1 "Tarea8" length [2-3] 
-    task 2 "Tarea9" length [3-5] depends_on 5.1
+project a "Proyecto5" format month {
+    task a "Tarea8" length [2-3] 
+    task b "Tarea9" length [3-5] depends_on a.a
 }

@@ -1,6 +1,6 @@
-project 8 "ProyectoDependenciasUnica" format week {
-    task 1 "Configuración de la base de datos" length 2
-    task 2 "Desarrollo del backend" length [3] depends_on 8.1
-    task 3 "Despliegue del servidor" length [2] depends_on 8.2
-    task 4 "Configuración del frontend" length [2] unique
+project a "ProyectoDependenciasUnica" format week {
+    task a "Configuración de la base de datos" length [2]
+    task b "Desarrollo del backend" length [3] depends_on a.a
+    task c "Despliegue del servidor" length [2] depends_on a.b
+    task d "Configuración del frontend" length [2] unique
 }
