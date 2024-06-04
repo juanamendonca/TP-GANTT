@@ -127,11 +127,11 @@ projectOptionals: DEPENDS_ON_PROJECT ID									{ $$ = IdOptionalsSemanticAction
 	| DEPENDS_ON_PROJECT ID WITH ID projectUnion						{ $$ = BothOptionalsSemanticAction($2, $4, $5); } 
 	;
 
-projectUnion: 
+projectUnion:															{ $$ = NULL; }
 	| projectUnion COMMA ID												{ $$ = IdProjectUnionSemanticAction($1, $3); } 
 	;
 
-projectBody: OPEN_BRACKET CLOSE_BRACKET
+projectBody: OPEN_BRACKET CLOSE_BRACKET									{ $$ = NULL; }
 	| OPEN_BRACKET taskList CLOSE_BRACKET								{ $$ = taskListProjectBodySemanticAction($2); }
 	| OPEN_BRACKET projectBodyOptionals taskList CLOSE_BRACKET			{ $$ = optionalsProjectBodySemanticAction($2, $3); }
 	;
@@ -151,7 +151,7 @@ taskLengthFormat: START SPECIFIC_DATE FINISH SPECIFIC_DATE				{ $$ = dateLengthF
 taskOptionals: CATEGORY ID												{ $$ = oneTaskOptionalsSemanticAction($2, CATEGORYTASK); }
 	| POINTS INTEGER													{ $$ = twoTaskOptionalsSemanticAction($2, POINTSTASK); }
 	| DEPENDS_ON ID DOT ID taskOptionDependsOn							{ $$ = threeTaskOptionalsSemanticAction($2, $4, $5, DEPENDS); }
-	| UNIQUE															
+	| UNIQUE															{ $$ = NULL; }
 	| CATEGORY ID POINTS INTEGER										{ $$ = fourTaskOptionalsSemanticAction($2, $4, CATEGORY_POINTS); }
 	| CATEGORY ID DEPENDS_ON ID DOT ID taskOptionDependsOn				{ $$ = fiveTaskOptionalsSemanticAction($2, $4, $6, $7, CATEGORY_DEPENDS); }
 	| CATEGORY ID UNIQUE												{ $$ = oneTaskOptionalsSemanticAction($2, CATEGORY_UNIQUE); }
@@ -165,7 +165,7 @@ taskOptionals: CATEGORY ID												{ $$ = oneTaskOptionalsSemanticAction($2, 
 	| CATEGORY ID POINTS INTEGER DEPENDS_ON ID DOT ID taskOptionDependsOn UNIQUE	{ $$ = sevenTaskOptionalsSemanticAction($2, $4, $6, $8, $9,CATEGORY_POINTS_DEPENDS_UNIQUE); }                             
 	;
 
-taskOptionDependsOn:
+taskOptionDependsOn:																							{ $$ = NULL; }
 	| taskOptionDependsOn COMMA ID DOT ID																		{ $$ = TaskOptionDependsOnSemanticAction($3,$5); }
 	;
 
@@ -185,7 +185,7 @@ projectBodyOptionals: MAX_TASKS INTEGER																			{ $$ = OneBodyOptional
 	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption MAX_POINTS INTEGER PROJECT_START SPECIFIC_DATE  { $$ = FourteenBodyOptionalsSemanticAction($2,$4,$5,$6,$8,$10); }
 	| MAX_TASKS INTEGER CATEGORIES ID NAME bodyCategoriesOption PROJECT_START SPECIFIC_DATE						{ $$ = FifthteenBodyOptionalsSemanticAction($2,$4,$5,$6,$8);}
 	;
-bodyCategoriesOption: 
+bodyCategoriesOption: 																							{ $$ = NULL; }
 	| bodyCategoriesOption COMMA ID NAME 																		{ $$ = RecursiveCategoriesOptionSemanticAction($3, $4); }
 	;
 
