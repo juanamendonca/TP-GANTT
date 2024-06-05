@@ -126,12 +126,12 @@ Token MonthLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	return MONTH;
 }
 
-Token BracketsLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token BracesLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	Token token;
 	switch (lexicalAnalyzerContext->lexeme[0]) {
-		case '{': token = OPEN_BRACKET; break;
-		case '}': token = CLOSE_BRACKET; break;
+		case '{': token = OPEN_BRACES; break;
+		case '}': token = CLOSE_BRACES; break;
 	}
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
