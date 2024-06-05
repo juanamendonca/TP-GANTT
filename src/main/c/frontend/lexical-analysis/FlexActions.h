@@ -38,7 +38,7 @@ Token HourLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token DayLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MonthLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token WeekLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token BracketsLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token BracesLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token TaskLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token LengthLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token StartLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);

@@ -67,8 +67,8 @@
 %token <token> DAY
 %token <token> WEEK
 %token <token> MONTH
-%token <token> OPEN_BRACKET
-%token <token> CLOSE_BRACKET
+%token <token> OPEN_BRACES
+%token <token> CLOSE_BRACES
 %token <token> TASK
 %token <token> LENGTH
 %token <token> START
@@ -152,8 +152,8 @@ projectUnion:															{ $$ = NULL; }
 	| projectUnion COMMA ID												{ $$ = IdProjectUnionSemanticAction($1, $3); } 
 	;
 
-projectBody: OPEN_BRACKET CLOSE_BRACKET									{ $$ = NULL; }
-	| OPEN_BRACKET projectBodyOptionals taskList CLOSE_BRACKET			{ $$ = OptionalsProjectBodySemanticAction($2, $3); }
+projectBody: OPEN_BRACES CLOSE_BRACES									{ $$ = NULL; }
+	| OPEN_BRACES projectBodyOptionals taskList CLOSE_BRACES			{ $$ = OptionalsProjectBodySemanticAction($2, $3); }
 	;
 
 taskList: taskStructure													{ $$ = StructureListSemanticAction($1); }
