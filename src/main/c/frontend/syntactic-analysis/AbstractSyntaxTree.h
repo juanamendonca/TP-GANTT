@@ -15,14 +15,21 @@ void shutdownAbstractSyntaxTreeModule();
  */
 
 typedef enum RecursiveType RecursiveType;
-typedef enum OptionalsType OptionalsType;
 typedef enum ProjectOptionalsType ProjectOptionalsType;
 typedef enum TaskLengthFormatType TaskLengthFormatType;
-typedef enum TaskOptionalsType TaskOptionalsType;
-typedef enum ProjectBodyOptionalsType ProjectBodyOptionalsType;
 
 typedef struct Program Program;
 typedef struct ProjectStructure ProjectStructure;
+typedef struct ProjectStructureCommon ProjectStructureCommon;
+typedef struct TimeUnit TimeUnit;
+typedef struct CategoryId CategoryId;
+typedef struct PointsInteger PointsInteger;
+typedef struct DependsOnId DependsOnId;
+typedef struct Unique Unique;
+typedef struct ProjectStart ProjectStart;
+typedef struct MaxTasks MaxTasks;
+typedef struct CategoriesId CategoriesId;
+typedef struct MaxPoints MaxPoints;
 typedef struct ProjectBody ProjectBody;
 typedef struct ProjectOptionals ProjectOptionals;
 typedef struct ProjectUnion ProjectUnion;
@@ -43,15 +50,11 @@ enum RecursiveType {
 	MULTIPLE
 };
 
-enum OptionalsType {
-	BASIC,
-	OPTIONALS
-};
-
 enum ProjectOptionalsType{
 	DEPENDS_ON_P,
 	WITH_P,
-	BOTH
+	BOTH,
+	EMPTY
 };
 
 enum TaskLengthFormatType{
@@ -59,68 +62,66 @@ enum TaskLengthFormatType{
 	DURATION
 };
 
-enum TaskOptionalsType{
-	CATEGORYTASK,
-	POINTSTASK,
-	DEPENDS,
-	CATEGORY_POINTS,
-	CATEGORY_DEPENDS,
-	CATEGORY_UNIQUE,
-	POINTS_DEPENDS,
-	POINTS_UNIQUE,
-	DEPENDS_UNIQUE,
-	CATEGORY_POINTS_DEPENDS,
-	CATEGORY_DEPENDS_UNIQUE,
-	CATEGORY_POINTS_UNIQUE,
-	POINTS_DEPENDS_UNIQUE,
-	CATEGORY_POINTS_DEPENDS_UNIQUE
-};
-
-enum ProjectBodyOptionalsType{
-	TASKSBODY,
-	CATEGORIESBODY,
-	POINTSBODY,
-	STARTBODY,
-	TASKS_CATEGORIES,
-	TASKS_POINTS,
-	TASKS_START,
-	CATEGORIES_POINTS,
-	CATEGORIES_START,
-	POINTS_START,
-	TASKS_CATEGORIES_POINTS,
-	TASKS_POINTS_START,
-	CATEGORIES_POINTS_START,
-	TASKS_CATEGORIES_POINTS_START,
-	TASK_CATEGORIES_START
-};
-
 struct BodyCategoriesOption{
 	char * id;
 	char * name;
+	BodyCategoriesOption * bodyCategoriesOption;
 };
 
-struct ProjectBodyOptionals {
-	int maxTasks;
-	int maxPoints;
-	char * startDate;
+struct ProjectStart{
+	char * date;
+};
+
+struct MaxPoints{
+	int points;
+};
+
+struct CategoriesId{
 	char * id;
 	char * name;
 	BodyCategoriesOption * bodyCategoriesOption;
-	ProjectBodyOptionalsType type;
+};
+
+struct MaxTasks{
+	int tasks;
+};
+
+struct ProjectBodyOptionals {
+	MaxTasks * maxTasks;
+	CategoriesId * categoriesId;
+	MaxPoints * maxPoints;
+	ProjectStart * projectStart;
 };
 
 struct TaskOptionDependsOn{
 	char * id;
 	char * id2;
+	TaskOptionDependsOn * taskOptionDependsOn;
+};
+
+struct DependsOnId {
+	char * id1;
+	char * id2;
+	TaskOptionDependsOn * taskOptionDependsOn;
+};
+
+struct PointsInteger {
+	int points;
+};
+
+struct CategoryId {
+	char * id;
+};
+
+struct Unique {
+	
 };
 
 struct TaskOptionals {
-	char * id1;
-	char * id2;
-	char * id3;
-	int points;
-	TaskOptionDependsOn * taskOptionDependsOn;
-	TaskOptionalsType type;
+	CategoryId * categoryId;
+	PointsInteger * pointsInteger;
+	DependsOnId * dependsOnId;
+	Unique * unique;
 };
 
 struct TaskLengthFormat {
@@ -139,19 +140,22 @@ struct TaskStructure {
 	char * name;
 	TaskLengthFormat * taskLengthFormat;
 	TaskOptionals * taskOptionals;
-	OptionalsType type;
 };
 
 struct TaskList {
-	TaskList * taskList;
-	TaskStructure * taskStructure;
+	union {
+		TaskStructure * taskStructure1;
+		struct{
+			TaskList * taskList;
+			TaskStructure * taskStructure2;
+		};
+	};
 	RecursiveType type;
 };
 
 struct ProjectBody {
 	ProjectBodyOptionals * projectBodyOptionals;
 	TaskList * taskList;
-	OptionalsType type;
 };
 
 struct ProjectUnion {
@@ -160,23 +164,47 @@ struct ProjectUnion {
 };
 
 struct ProjectOptionals {
-	char * id1;
-	char * id2;
-	ProjectUnion * projectUnion;
+	union {
+		struct{
+			char * id1;
+		};
+		struct{
+			char * id2;
+			ProjectUnion * projectUnion1;
+		};
+		struct{
+			char * id3;
+			char * id4;
+			ProjectUnion * projectUnion2;
+		};
+	};
 	ProjectOptionalsType type;
 };
 
-struct ProjectStructure {
+struct TimeUnit{
+
+};
+
+struct ProjectStructureCommon{
 	char * id;
 	char * name;
-	ProjectBody * projectBody;
+	TimeUnit * timeUnit;
+};
+
+struct ProjectStructure {
+	ProjectStructureCommon * projectStructureCommon;
 	ProjectOptionals * projectOptionals;
-	OptionalsType type;
+	ProjectBody * projectBody;
 };
 
 struct Program {
-	ProjectStructure * projectStructure;
-	Program * program;
+	union{
+		ProjectStructure * projectStructure;
+		struct {
+			Program * program;
+			ProjectStructure * projectStructure1;
+		};
+	};
 	RecursiveType type;
 };
 
@@ -189,212 +217,3 @@ struct Program {
 // void releaseProgram(Program * program);
 
 #endif
-
-// struct BodyCategoriesOption{
-// 	char * id;
-// 	char * name;
-// };
-
-// struct ProjectBodyOptionals {
-// 	union {
-// 		int max;
-// 		char * startDate;
-// 		struct{
-// 			char * id;
-// 			char * name;
-// 			BodyCategoriesOption * bodyCategoriesOption;
-// 		};
-// 		struct{
-// 			int max1;
-// 			char * id2;
-// 			char * name1;
-// 			BodyCategoriesOption * bodyCategoriesOption;
-// 		};
-// 		struct{
-// 			int maxTasks;
-// 			int maxPoints;
-// 		};
-// 		struct{
-// 			int max2;
-// 			char * startDate1;
-// 		};
-// 		struct{
-// 			int max3;
-// 			char * id3;
-// 			char * name2;
-// 			BodyCategoriesOption * bodyCategoriesOption;
-// 			char * startDate2;
-// 		};
-// 		struct{
-// 			char * id4;
-// 			char * name3;
-// 			BodyCategoriesOption * bodyCategoriesOption;
-// 			char * startDate3;
-// 		};
-// 		struct{
-// 			int maxTasks2;
-// 			char * id5;
-// 			char * name4;
-// 			BodyCategoriesOption * bodyCategoriesOption;
-// 			int maxPoints2;
-// 		};
-// 		struct{
-// 			int maxTasks3;
-// 			int maxPoints3;
-// 			char * startDate4;
-// 		};
-// 		struct{
-// 			int maxTasks4;
-// 			int maxPoints4;
-// 			char * startDate5;
-// 			char * id6;
-// 			char * name5;
-// 			BodyCategoriesOption * bodyCategoriesOption;
-// 		};
-// 	};
-// 	ProjectBodyOptionalsType type;
-// };
-
-// struct TaskOptionDependsOn{
-// 	char * id;
-// 	char * id2;
-// };
-
-// struct TaskOptionals {
-// 	union {
-// 		char * id;
-// 		int points;
-// 		struct{
-// 			char * id1;
-// 			char * id2;
-// 			TaskOptionDependsOn * taskOptionDependsOn;
-// 		};
-// 		struct{
-// 			char * id3;
-// 			int points2;
-// 		};
-// 		struct{
-// 			char * id4;
-// 			char * id5;
-// 			char * id6;
-// 			TaskOptionDependsOn * taskOptionDependsOn;
-// 		};
-// 		struct{
-// 			int points3;
-// 			char * id7;
-// 			char * id8;
-// 			TaskOptionDependsOn * taskOptionDependsOn;
-// 		};
-// 		struct{
-// 			char * id9;
-// 			int points4;
-// 			char * id10;
-// 			char * id11;
-// 			TaskOptionDependsOn * taskOptionDependsOn;
-// 		};
-// 	};
-// 	TaskOptionalsType type;
-// };
-
-// struct TaskLengthFormat {
-// 	union {
-// 		struct{
-// 			char * startDate;
-// 			char * finishDate;
-// 		};
-// 		struct{
-// 			char * interval;
-// 		};
-// 	};
-// 	TaskLengthFormatType type;
-// };
-
-// struct TaskStructure {
-// 	union {
-// 		struct{
-// 			char * id;
-// 			char * name;
-// 			TaskLengthFormat * taskLengthFormat;
-// 		};
-// 		struct{
-// 			char * id;
-// 			char * name;
-// 			TaskLengthFormat * taskLengthFormat;
-// 			TaskOptionals * taskOptionals;
-// 		};
-// 	};
-// 	OptionalsType type;
-// };
-
-// struct TaskList {
-// 	union {
-// 		TaskStructure * taskStructure;
-// 		struct{
-// 			TaskList * taskList;
-// 			TaskStructure * taskStructure;
-// 		};
-// 	};
-// 	RecursiveType type;
-// };
-
-// struct ProjectBody {
-// 	union {
-// 		TaskList * taskList;
-// 		struct{
-// 			ProjectBodyOptionals * projectBodyOptionals;
-// 			TaskList * taskList;
-// 		};
-// 	};
-// 	OptionalsType type;
-// };
-
-// struct ProjectUnion {
-// 	ProjectUnion * projectUnion;
-// 	char * id;
-// };
-
-// struct ProjectOptionals {
-// 	union {
-// 		struct{
-// 			char * id;
-// 		};
-// 		struct{
-// 			char * id;
-// 			ProjectUnion * projectUnion;
-// 		};
-// 		struct{
-// 			char * id1;
-// 			char * id2;
-// 			ProjectUnion * projectUnion;
-// 		};
-// 	};
-// 	ProjectOptionalsType type;
-// };
-
-// struct ProjectStructure {
-// 	union {
-// 		struct{
-// 			char * id;
-// 			char * name;
-// 			ProjectBody * projectBody;
-// 		};
-// 		struct{
-// 			char * id;
-// 			char * name;
-// 			ProjectOptionals * projectOptionals;
-// 			ProjectBody * projectBody;
-// 		};
-// 	};
-// 	OptionalsType type;
-// };
-
-// struct Program {
-// 	union{
-// 		ProjectStructure * projectStructure;
-// 		struct {
-// 			Program * program;
-// 			ProjectStructure * projectStructure1;
-// 		};
-// 	};
-// 	RecursiveType type;
-// };
