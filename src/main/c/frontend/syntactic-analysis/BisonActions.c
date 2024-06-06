@@ -96,7 +96,7 @@ TaskList * StructureRecursiveListSemanticAction(TaskList * recursiveTaskList, Ta
 	TaskList * taskList = calloc(1,sizeof(TaskList));
 	taskList->taskList = recursiveTaskList;
 	taskList->taskStructure2 = taskStructure;
-	taskList->type = SINGLE;
+	taskList->type = MULTIPLE;
 	return taskList;
 }
 
@@ -172,7 +172,7 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * 
 Program * ProjectStructureRecursiveProgramSemanticAction(CompilerState * compilerState, Program * recursiveProgram, ProjectStructure * projectStructure){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Program * program = calloc(1, sizeof(Program));
-	program->projectStructure = projectStructure;
+	program->projectStructure1 = projectStructure;
 	program->program = recursiveProgram;
 	program->type = MULTIPLE;
 	compilerState->abstractSyntaxtTree = program;
