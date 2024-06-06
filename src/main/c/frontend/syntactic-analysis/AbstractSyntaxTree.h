@@ -211,9 +211,25 @@ struct Program {
 /**
  * Node recursive destructors.
  */
-// void releaseConstant(Constant * constant);
-// void releaseExpression(Expression * expression);
-// void releaseFactor(Factor * factor);
-// void releaseProgram(Program * program);
-
+void releaseBodyCategoriesOption(BodyCategoriesOption * bodyCategoriesOption);
+void releaseProjectStart(ProjectStart * projectStart);
+void releaseMaxPoints(MaxPoints * maxPoints);
+void releaseCategoriesId(CategoriesId * categoriesId);
+void releaseMaxTasks(MaxTasks * maxTasks);
+void releaseProjectBodyOptionals(ProjectBodyOptionals * projectBodyOptionals);
+void releaseTaskOptionDependsOn(TaskOptionDependsOn * taskOptionDependsOn);
+void releaseDependsOnId(DependsOnId * dependsOnId);
+void releasePointsInteger(PointsInteger * pointsInteger);
+void releaseCategoryId(CategoryId * categoryId);
+void releaseUnique(Unique * unique);
+void releaseTaskOptionals(TaskOptionals * taskOptionals);
+void releaseTaskLengthFormat(TaskLengthFormat * taskLengthFormat);
+void releaseTaskStructure(TaskStructure * taskStructure);
+void releaseTaskList(TaskList * taskList);
+void releaseProjectBody(ProjectBody * projectBody);
+void releaseProjectUnion(ProjectUnion * projectUnion);
+void releaseProjectOptionals(ProjectOptionals * projectOptionals);
+void releaseProjectStructureCommon(ProjectStructureCommon * projectStructureCommon);
+void releaseProjectStructure(ProjectStructure * projectStructure);
+void releaseProgram(Program * program);
 #endif
