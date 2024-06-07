@@ -57,7 +57,8 @@
 %token <integer> INTEGER
 %token <string> NAME
 %token <string> ID
-%token <string> INTERVAL
+%token <integer> LEFT_INTERVAL
+%token <integer> RIGHT_INTERVAL
 %token <string> SPECIFIC_DATE
 
 %token <token> PROJECT
@@ -164,7 +165,8 @@ taskStructure: TASK ID NAME taskLengthFormat taskOptionals				{ $$ = OptionalsSt
 	;
 
 taskLengthFormat: START SPECIFIC_DATE FINISH SPECIFIC_DATE				{ $$ = DateLengthFormatSemanticAction($2, $4); }
-	| LENGTH INTERVAL													{ $$ = IntervalLengthFormatSemanticAction($2); }
+	| LENGTH LEFT_INTERVAL RIGHT_INTERVAL								{ $$ = IntervalLengthFormatSemanticAction($2, $3); }
+	| LENGTH LEFT_INTERVAL												{ $$ = IntervalLengthFormatSemanticAction($2, -1); }
 	;
 
 taskOptionals: categoryId pointsInteger dependsOnId unique				{ $$ = TaskOptionalSemanticAction($1, $2, $3, $4); }

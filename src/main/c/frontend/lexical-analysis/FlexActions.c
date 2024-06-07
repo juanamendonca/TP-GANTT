@@ -72,10 +72,16 @@ Token IdLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	return ID;
 }
 
-Token IntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token LeftIntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = lexicalAnalyzerContext->lexeme;
-	return INTERVAL;
+	lexicalAnalyzerContext->semanticValue->integer = atoi(lexicalAnalyzerContext->lexeme);
+	return LEFT_INTERVAL;
+}
+
+Token RightIntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	lexicalAnalyzerContext->semanticValue->integer = atoi(lexicalAnalyzerContext->lexeme);
+	return RIGHT_INTERVAL;
 }
 
 Token SpecificDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {

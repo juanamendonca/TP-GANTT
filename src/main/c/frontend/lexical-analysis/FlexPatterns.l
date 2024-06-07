@@ -6,6 +6,8 @@
 
 %x MULTILINE_COMMENT
 %x STRING
+%x BRACKET
+%x RIGHT_INTERVAL
 
 %%
 
@@ -18,6 +20,14 @@
 \"                                  { BEGIN(STRING); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <STRING>[[:alnum:]áéíóúÁÉÍÓÚñÑ[:space:]]+  { return NameLexemeAction(createLexicalAnalyzerContext()); }
 <STRING>\"                          { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+
+"["                                 { BEGIN(BRACKET); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+<BRACKET>[[:digit:]]+               { return LeftIntervalLexemeAction(createLexicalAnalyzerContext()); }
+<BRACKET>"-"                        { BEGIN(RIGHT_INTERVAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+<BRACKET>"]"                        { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+
+<RIGHT_INTERVAL>[[:digit:]]+        { return RightIntervalLexemeAction(createLexicalAnalyzerContext()); }
+<RIGHT_INTERVAL>"]"                 { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
 "project"                           { return ProjectLexemeAction(createLexicalAnalyzerContext()); }
 "format"                            { return FormatLexemeAction(createLexicalAnalyzerContext()); }
@@ -49,8 +59,6 @@
 [[:digit:]]+                        { return IntegerLexemeAction(createLexicalAnalyzerContext()); }
 
 [[:alpha:]]+                        { return IdLexemeAction(createLexicalAnalyzerContext()); }
-
-\[[[:digit:]]+"-"[[:digit:]]+\]|\[[[:digit:]]+\] { return IntervalLexemeAction(createLexicalAnalyzerContext()); }
 
 [[:digit:]]{4}\-((0[1-9])|(1[0-2]))\-((0[1-9])|([12][0-9])|(3[01])) { return SpecificDateLexemeAction(createLexicalAnalyzerContext()); }
 

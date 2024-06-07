@@ -130,7 +130,10 @@ struct TaskLengthFormat {
 			char * startDate;
 			char * finishDate;
 		};
-		char * interval;
+		struct{
+			int leftInterval;
+			int rightInterval;
+		};
 	};
 	TaskLengthFormatType type;
 };

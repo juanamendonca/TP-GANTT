@@ -128,8 +128,6 @@ void releaseTaskLengthFormat(TaskLengthFormat * taskLengthFormat) {
         if (taskLengthFormat->type == TIME_PERIOD) {
             free(taskLengthFormat->startDate);
             free(taskLengthFormat->finishDate);
-        } else {
-            free(taskLengthFormat->interval);
         }
         free(taskLengthFormat);
     }

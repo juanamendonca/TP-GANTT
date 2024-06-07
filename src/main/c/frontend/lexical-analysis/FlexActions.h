@@ -28,7 +28,8 @@ void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token NameLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token IdLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token IntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token LeftIntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token RightIntervalLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token SpecificDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 Token ProjectLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);

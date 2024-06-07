@@ -64,10 +64,11 @@ TaskOptionals * TaskOptionalSemanticAction(CategoryId * categoryId, PointsIntege
 	return taskOptionals;
 }
 
-TaskLengthFormat * IntervalLengthFormatSemanticAction(char * interval){
+TaskLengthFormat * IntervalLengthFormatSemanticAction(int leftInterval, int rightInterval){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TaskLengthFormat * taskLengthFormat = calloc(1,sizeof(TaskLengthFormat));
-	taskLengthFormat->interval = interval;
+	taskLengthFormat->leftInterval = leftInterval;
+	taskLengthFormat->rightInterval = rightInterval;
 	taskLengthFormat->type = DURATION;
 	return taskLengthFormat;
 }

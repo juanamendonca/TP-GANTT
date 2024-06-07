@@ -22,7 +22,7 @@ DependsOnId * DependsOnIdSemanticAction(char * id1, char * id2, TaskOptionDepend
 PointsInteger * PointsIntegerSemanticAction(int points);
 CategoryId * CategoryIdSemanticAction(char * id);
 TaskOptionals * TaskOptionalSemanticAction(CategoryId * categoryId, PointsInteger * pointsInteger, DependsOnId * dependsOnId, Unique * unique);
-TaskLengthFormat * IntervalLengthFormatSemanticAction(char * interval);
+TaskLengthFormat * IntervalLengthFormatSemanticAction(int leftInterval, int rightInterval);
 TaskLengthFormat * DateLengthFormatSemanticAction(char * startDate, char * finishDate);
 TaskStructure * OptionalsStructureSemanticAction(char * id, char * name, TaskLengthFormat * taskLengthFormat, TaskOptionals * taskOptionals);
 TaskList * StructureRecursiveListSemanticAction(TaskList * recursiveTaskList, TaskStructure * taskStructure);
