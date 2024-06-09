@@ -18,6 +18,8 @@ RUN sudo chown ubuntu:ubuntu /home/ubuntu
 # Copy only the Ubuntu scripts inside image.
 COPY script/ubuntu/ script/ubuntu/
 RUN sudo chown ubuntu:ubuntu --recursive /home/ubuntu
+RUN sudo apt-get install -y python3 python3-pip
+RUN pip3 install --break-system-packages plotly pandas
 
 # Install dependencies.
 RUN chmod u+x --recursive script/ubuntu
