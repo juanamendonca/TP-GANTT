@@ -170,6 +170,13 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * 
 	return projectStructureCommon;
 }
 
+TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	TimeUnit * timeUnit = calloc(1,sizeof(TimeUnit));
+	timeUnit->type = type;
+	return timeUnit;
+}
+
 Program * ProjectStructureRecursiveProgramSemanticAction(CompilerState * compilerState, Program * recursiveProgram, ProjectStructure * projectStructure){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Program * program = calloc(1, sizeof(Program));
