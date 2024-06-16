@@ -136,11 +136,11 @@ projectStructure: projectStructureCommon projectOptionals projectBody   { $$ = O
 projectStructureCommon: PROJECT ID NAME FORMAT timeUnit					{ $$ = ProjectStructureCommonSemanticAction($2, $3, $5); }
 	;
 
-timeUnit: HOUR															{ $$ = NULL; }
-	| DAY																{ $$ = NULL; }
-	| WEEK																{ $$ = NULL; }
-	| MONTH																{ $$ = NULL; }
-	| DATE																{ $$ = NULL; }
+timeUnit: HOUR															{ $$ = TimeUnitSemanticAction(HOUR_TYPE); }
+	| DAY																{ $$ = TimeUnitSemanticAction(DAY_TYPE); }
+	| WEEK																{ $$ = TimeUnitSemanticAction(WEEK_TYPE); }
+	| MONTH																{ $$ = TimeUnitSemanticAction(MONTH_TYPE); }
+	| DATE																{ $$ = TimeUnitSemanticAction(DATE_TYPE); }
 	;
 
 projectOptionals:														{ $$ = NULL; }

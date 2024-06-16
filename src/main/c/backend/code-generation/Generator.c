@@ -1,171 +1,140 @@
-// #include "Generator.h"
+#include "Generator.h"
 
-// /* MODULE INTERNAL STATE */
+/* MODULE INTERNAL STATE */
+const char _indentationCharacter = ' ';
+const char _indentationSize = 4;
+static Logger * _logger = NULL;
+static FILE *file = NULL;
 
-// const char _indentationCharacter = ' ';
-// const char _indentationSize = 4;
-// static Logger * _logger = NULL;
+void initializeGeneratorModule() {
+	_logger = createLogger("Generator");
+}
 
-// void initializeGeneratorModule() {
-// 	_logger = createLogger("Generator");
-// }
+void shutdownGeneratorModule() {
+	if (_logger != NULL) {
+		destroyLogger(_logger);
+	}
+}
 
-// void shutdownGeneratorModule() {
-// 	if (_logger != NULL) {
-// 		destroyLogger(_logger);
-// 	}
-// }
+/** PRIVATE FUNCTIONS */
 
-// /** PRIVATE FUNCTIONS */
+static void _generateEpilogue(const int value);
+static void _generateBodyCategoriesOption(const unsigned int indentationLevel, BodyCategoriesOption * bodyCategoriesOption);
+static void _generateProjectStart(const unsigned int indentationLevel, ProjectStart * projectStart);
+static void _generateMaxPoints(const unsigned int indentationLevel, MaxPoints * maxPoints);
+static void _generateCategoriesId(const unsigned int indentationLevel, CategoriesId * categoriesId);
+static void _generateMaxTasks(const unsigned int indentationLevel, MaxTasks * maxTasks);
+static void _generateProjectBodyOptionals(const unsigned int indentationLevel, ProjectBodyOptionals * projectBodyOptionals);
+static void _generateTaskOptionDependsOn(const unsigned int indentationLevel, TaskOptionDependsOn * taskOptionDependsOn);
+static void _generateDependsOnId(const unsigned int indentationLevel, DependsOnId * dependsOnId);
+static void _generatePointsInteger(const unsigned int indentationLevel, PointsInteger * pointsInteger);
+static void _generateCategoryId(const unsigned int indentationLevel, CategoryId * categoryId);
+static void _generateUnique(const unsigned int indentationLevel, Unique * unique);
+static void _generateTaskOptionals(const unsigned int indentationLevel, TaskOptionals * taskOptionals);
+static void _generateTaskLengthFormat(const unsigned int indentationLevel, TaskLengthFormat * taskLengthFormat);
+static void _generateTaskStructure(const unsigned int indentationLevel, TaskStructure * taskStructure);
+static void _generateTaskList(const unsigned int indentationLevel, TaskList * taskList);
+static void _generateProjectUnion(const unsigned int indentationLevel, ProjectUnion * projectUnion);
+static void _generateTimeUnit(const unsigned int indentationLevel, TimeUnit * timeUnit);
+static void _generateProjectBody(const unsigned int indentationLevel, ProjectBody * projectBody);
+static void _generateProjectOptionals(const unsigned int indentationLevel, ProjectOptionals * projectOptionals);
+static void _generateProjectStructureCommon(const unsigned int indentationLevel, ProjectStructureCommon * projectStructureCommon);
+static void _generateProjectStructure(const unsigned int indentationLevel, ProjectStructure * projectStructure);
+static void _generateProgram(Program * program);
+static void _generatePrologue(void);
+static char * _indentation(const unsigned int indentationLevel);
+static void _output(const unsigned int indentationLevel, const char * const format, ...);
+static void openFile();
+static void closeFile();
 
-// static const char _expressionTypeToCharacter(const ExpressionType type);
-// static void _generateConstant(const unsigned int indentationLevel, Constant * constant);
-// static void _generateEpilogue(const int value);
-// static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
-// static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
-// static void _generateProgram(Program * program);
-// static void _generatePrologue(void);
-// static char * _indentation(const unsigned int indentationLevel);
-// static void _output(const unsigned int indentationLevel, const char * const format, ...);
 
-// /**
-//  * Converts and expression type to the proper character of the operation
-//  * involved, or returns '\0' if that's not possible.
-//  */
-// static const char _expressionTypeToCharacter(const ExpressionType type) {
-// 	switch (type) {
-// 		case ADDITION: return '+';
-// 		case DIVISION: return '/';
-// 		case MULTIPLICATION: return '*';
-// 		case SUBTRACTION: return '-';
-// 		default:
-// 			logError(_logger, "The specified expression type cannot be converted into character: %d", type);
-// 			return '\0';
-// 	}
-// }
+/**
+ * Creates the epilogue of the generated output, that is, the final lines that
+ * completes a valid Latex document.
+ */
+static void _generateEpilogue(const int value) {
+	_output(0, "%s%d%s",
+		"            [ $", value, "$, circle, draw, blue ]\n"
+		"        ]\n"
+		"    \\end{forest}\n"
+		"\\end{document}\n\n"
+	);
+}
 
-// /**
-//  * Generates the output of a constant.
-//  */
-// static void _generateConstant(const unsigned int indentationLevel, Constant * constant) {
-// 	_output(indentationLevel, "%s", "[ $C$, circle, draw, black!20\n");
-// 	_output(1 + indentationLevel, "%s%d%s", "[ $", constant->value, "$, circle, draw ]\n");
-// 	_output(indentationLevel, "%s", "]\n");
-// }
+static void _generateProjectStructure(const unsigned int indentationLevel, ProjectStructure * projectStructure){
 
-// /**
-//  * Creates the epilogue of the generated output, that is, the final lines that
-//  * completes a valid Latex document.
-//  */
-// static void _generateEpilogue(const int value) {
-// 	_output(0, "%s%d%s",
-// 		"            [ $", value, "$, circle, draw, blue ]\n"
-// 		"        ]\n"
-// 		"    \\end{forest}\n"
-// 		"\\end{document}\n\n"
-// 	);
-// }
+}
 
-// /**
-//  * Generates the output of an expression.
-//  */
-// static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
-// 	_output(indentationLevel, "%s", "[ $E$, circle, draw, black!20\n");
-// 	switch (expression->type) {
-// 		case ADDITION:
-// 		case DIVISION:
-// 		case MULTIPLICATION:
-// 		case SUBTRACTION:
-// 			_generateExpression(1 + indentationLevel, expression->leftExpression);
-// 			_output(1 + indentationLevel, "%s%c%s", "[ $", _expressionTypeToCharacter(expression->type), "$, circle, draw, purple ]\n");
-// 			_generateExpression(1 + indentationLevel, expression->rightExpression);
-// 			break;
-// 		case FACTOR:
-// 			_generateFactor(1 + indentationLevel, expression->factor);
-// 			break;
-// 		default:
-// 			logError(_logger, "The specified expression type is unknown: %d", expression->type);
-// 			break;
-// 	}
-// 	_output(indentationLevel, "%s", "]\n");
-// }
+/**
+ * Generates the output of the program.
+ */
+static void _generateProgram(Program * program) {
+    if (program->type == SINGLE){
+        _generateProjectStructure(1, program->projectStructure);
+    } else {
+        _generateProjectStructure(1, program->projectStructure1);
+        _generateProgram(program->program);
+    }
+}
 
-// /**
-//  * Generates the output of a factor.
-//  */
-// static void _generateFactor(const unsigned int indentationLevel, Factor * factor) {
-// 	_output(indentationLevel, "%s", "[ $F$, circle, draw, black!20\n");
-// 	switch (factor->type) {
-// 		case CONSTANT:
-// 			_generateConstant(1 + indentationLevel, factor->constant);
-// 			break;
-// 		case EXPRESSION:
-// 			_output(1 + indentationLevel, "%s", "[ $($, circle, draw, purple ]\n");
-// 			_generateExpression(1 + indentationLevel, factor->expression);
-// 			_output(1 + indentationLevel, "%s", "[ $)$, circle, draw, purple ]\n");
-// 			break;
-// 		default:
-// 			logError(_logger, "The specified factor type is unknown: %d", factor->type);
-// 			break;
-// 	}
-// 	_output(indentationLevel, "%s", "]\n");
-// }
+/**
+ * Creates the prologue of the generated output, a Latex document that renders
+ * a tree thanks to the Forest package.
+ *
+ * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
+ */
+static void _generatePrologue(void) {
+	_output(0, "%s",
+		"import plotly.express as px\n"
+        "import pandas as pd\n\n"
+        "df = pd.DataFrame([\n"
+	);
+}
 
-// /**
-//  * Generates the output of the program.
-//  */
-// static void _generateProgram(Program * program) {
-// 	_generateExpression(3, program->expression);
-// }
+/**
+ * Generates an indentation string for the specified level.
+ */
+static char * _indentation(const unsigned int level) {
+	return indentation(_indentationCharacter, level, _indentationSize);
+}
 
-// /**
-//  * Creates the prologue of the generated output, a Latex document that renders
-//  * a tree thanks to the Forest package.
-//  *
-//  * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
-//  */
-// static void _generatePrologue(void) {
-// 	_output(0, "%s",
-// 		"\\documentclass{standalone}\n\n"
-// 		"\\usepackage[utf8]{inputenc}\n"
-// 		"\\usepackage[T1]{fontenc}\n"
-// 		"\\usepackage{amsmath}\n"
-// 		"\\usepackage{forest}\n"
-// 		"\\usepackage{microtype}\n\n"
-// 		"\\begin{document}\n"
-// 		"    \\centering\n"
-// 		"    \\begin{forest}\n"
-// 		"        [ \\text{$=$}, circle, draw, purple\n"
-// 	);
-// }
+/**
+ * Outputs a formatted string to standard output.
+ */
+static void _output(const unsigned int indentationLevel, const char * const format, ...) {
+	va_list arguments;
+	va_start(arguments, format);
+	char * indentation = _indentation(indentationLevel);
+	char * effectiveFormat = concatenate(2, indentation, format);
+	vfprintf(file, effectiveFormat, arguments);
+	free(effectiveFormat);
+	free(indentation);
+	va_end(arguments);
+}
 
-// /**
-//  * Generates an indentation string for the specified level.
-//  */
-// static char * _indentation(const unsigned int level) {
-// 	return indentation(_indentationCharacter, level, _indentationSize);
-// }
+static void openFile() {
+    file = fopen("gantt.py", "w");
+    if (file) {
+        fclose(file);
+    }
+    file = fopen("gantt.py", "a");
+}
 
-// /**
-//  * Outputs a formatted string to standard output.
-//  */
-// static void _output(const unsigned int indentationLevel, const char * const format, ...) {
-// 	va_list arguments;
-// 	va_start(arguments, format);
-// 	char * indentation = _indentation(indentationLevel);
-// 	char * effectiveFormat = concatenate(2, indentation, format);
-// 	vfprintf(stdout, effectiveFormat, arguments);
-// 	free(effectiveFormat);
-// 	free(indentation);
-// 	va_end(arguments);
-// }
+static void closeFile() {
+    if (file) {
+        fclose(file);
+        file = NULL;
+    }
+}
 
-// /** PUBLIC FUNCTIONS */
+/** PUBLIC FUNCTIONS */
 
-// void generate(CompilerState * compilerState) {
-// 	logDebugging(_logger, "Generating final output...");
-// 	_generatePrologue();
-// 	_generateProgram(compilerState->abstractSyntaxtTree);
-// 	_generateEpilogue(compilerState->value);
-// 	logDebugging(_logger, "Generation is done.");
-// }
+void generate(CompilerState * compilerState) {
+	logDebugging(_logger, "Generating final output...");
+    openFile();
+	_generatePrologue();
+	_generateProgram(compilerState->abstractSyntaxtTree);
+	_generateEpilogue(compilerState->value);
+    closeFile();
+	logDebugging(_logger, "Generation is done.");
+}

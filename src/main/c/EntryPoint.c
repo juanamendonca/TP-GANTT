@@ -41,6 +41,8 @@ const int main(const int count, const char ** arguments) {
 		logDebugging(logger, "Computing expression value...");
 		Program * program = compilerState.abstractSyntaxtTree;
 		// Type-Checking
+		// Computation
+		//generate(&compilerState);
 		logDebugging(logger, "Releasing AST resources...");
 		releaseProgram(program);
 	}

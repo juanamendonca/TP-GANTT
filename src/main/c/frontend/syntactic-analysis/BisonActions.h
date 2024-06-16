@@ -46,6 +46,7 @@ CategoriesId * CategoriesIdSemanticAction(char * id, char * name, BodyCategories
 MaxTasks * MaxTasksSemanticAction(int tasks);
 ProjectBodyOptionals * ProjectBodyOptionalsSemanticAction(MaxTasks * maxTasks, CategoriesId * categoriesId, MaxPoints * maxPoints, ProjectStart * projectStart);
 ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * name, TimeUnit * timeUnit);
+TimeUnit * TimeUnitSemanticAction(TimeUnitType type);
 
 
 #endif
