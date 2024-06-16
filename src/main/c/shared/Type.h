@@ -32,10 +32,10 @@ struct task{
 // Main Hash Table
 struct project{
     char * projectId;            /* we'll use this field as the key */
+	char *name;
 	struct task * tasks; // Hashtable de tareas (CLAVE es el id, VALOR)
 	struct category * categories; // Hashtable de CATEGORIAS (CLAVE es el id, VALOR)
-	char *name;
-    char *format;
+	char *format;
     char *depends_on;
     char **with;
     int max_points;

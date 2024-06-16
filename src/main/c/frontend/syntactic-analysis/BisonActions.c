@@ -169,11 +169,13 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * 
 	projectStructureCommon->id = id;
 	projectStructureCommon->name = name;
 	projectStructureCommon->timeUnit = timeUnit;
-
-	struct project * newProject = (struct project * )malloc(sizeof *newProject);
-	newProject->projectId=id;
-	newProject->name=name;
-	/*HASH_ADD_KEYPTR(hh, projects, newProject->projectId ,strlen(newProject->projectId ), newProject); */
+ 
+    struct project *newProject = malloc(sizeof(struct project));
+    newProject->projectId = id;
+    newProject->name = name;
+    // Agregar el proyecto a la tabla hash
+	HASH_ADD_KEYPTR(hh, projects,newProject->projectId, strlen(newProject->projectId), newProject); 
+	
 	return projectStructureCommon;
 }
 

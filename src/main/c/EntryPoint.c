@@ -15,14 +15,13 @@ struct project * projects = NULL; //Symbol table
  * The main entry-point of the entire application.
  */
 const int main(const int count, const char ** arguments) {
+	
 	Logger * logger = createLogger("EntryPoint");
 	initializeFlexActionsModule();
 	initializeBisonActionsModule();
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
 	//initializeGeneratorModule();
-
-	projects = (struct project *) malloc(sizeof *projects); //Symbol table
 
 
 	// Logs the arguments of the application.
@@ -50,6 +49,7 @@ const int main(const int count, const char ** arguments) {
 		compilationStatus = FAILED;
 	}
 
+
 	logDebugging(logger, "Releasing modules resources...");
 	//shutdownGeneratorModule();
 	shutdownAbstractSyntaxTreeModule();
@@ -58,5 +58,6 @@ const int main(const int count, const char ** arguments) {
 	shutdownFlexActionsModule();
 	logDebugging(logger, "Compilation is done.");
 	destroyLogger(logger);
+	
 	return compilationStatus;
 }
