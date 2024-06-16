@@ -23,7 +23,7 @@ extern unsigned int flexCurrentContext(void);
 static void _logSyntacticAnalyzerAction(const char * functionName);
 
 /**
- * Logs a syntactic-analyzer action in DEBUGGING level.
+ * Logs a syntactic-analyzer acnewProjecttion in DEBUGGING level.
  */
 static void _logSyntacticAnalyzerAction(const char * functionName) {
 	logDebugging(_logger, "%s", functionName);
@@ -169,13 +169,22 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * 
 	projectStructureCommon->id = id;
 	projectStructureCommon->name = name;
 	projectStructureCommon->timeUnit = timeUnit;
- 
-    struct project *newProject = malloc(sizeof(struct project));
-    newProject->projectId = id;
-    newProject->name = name;
-    // Agregar el proyecto a la tabla hash
-	HASH_ADD_KEYPTR(hh, projects,newProject->projectId, strlen(newProject->projectId), newProject); 
+
 	
+    struct project *newProject;
+	HASH_FIND_STR(projects, id,newProject);
+
+	if(newProject == NULL){
+		newProject = malloc(sizeof(struct project));
+		newProject->projectId = id;
+    	newProject->name = name;
+		// Agregar el proyecto a la tabla hash
+		HASH_ADD_KEYPTR(hh, projects,newProject->projectId, strlen(newProject->projectId), newProject); 
+	}
+	else{
+		logError(_logger, "Same ID's project definition", flexCurrentContext());
+	}
+    
 	return projectStructureCommon;
 }
 

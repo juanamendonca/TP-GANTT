@@ -1,6 +1,7 @@
 #ifndef TYPE_HEADER
 #define TYPE_HEADER
 #include "uthash.h" 
+//#include "../frontend/syntactic-analysis/AbstractSyntaxTree.h"
 
 typedef enum {
 	false = 0,
@@ -35,7 +36,7 @@ struct project{
 	char *name;
 	struct task * tasks; // Hashtable de tareas (CLAVE es el id, VALOR)
 	struct category * categories; // Hashtable de CATEGORIAS (CLAVE es el id, VALOR)
-	char *format;
+	char * format;
     char *depends_on;
     char **with;
     int max_points;
