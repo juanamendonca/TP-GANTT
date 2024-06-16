@@ -167,6 +167,7 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * 
 	projectStructureCommon->id = id;
 	projectStructureCommon->name = name;
 	projectStructureCommon->timeUnit = timeUnit;
+	
 	return projectStructureCommon;
 }
 

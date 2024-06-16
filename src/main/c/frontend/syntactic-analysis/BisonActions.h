@@ -7,6 +7,9 @@
 #include "AbstractSyntaxTree.h"
 #include "SyntacticAnalyzer.h"
 #include <stdlib.h>
+#include "../../shared/symbol_table.h"
+
+
 
 /** Initialize module's internal state. */
 void initializeBisonActionsModule();
