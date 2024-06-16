@@ -21,6 +21,10 @@ void shutdownFlexActionsModule();
  * Flex lexeme processing actions.
  */
 
+void insert_project(const char *id);
+void insert_task(const char *id);
+void insert_category(const char *id);
+
 void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);

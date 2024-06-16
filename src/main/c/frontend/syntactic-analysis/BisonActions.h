@@ -8,6 +8,9 @@
 #include "SyntacticAnalyzer.h"
 #include <stdlib.h>
 
+extern struct project * projects; //Symbol table
+
+
 /** Initialize module's internal state. */
 void initializeBisonActionsModule();
 

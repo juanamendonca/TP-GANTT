@@ -158,7 +158,9 @@ ProjectStructure * OptionalsProjectStructureSemanticAction(ProjectStructureCommo
 	projectStructure->projectStructureCommon = projectStructureCommon;
 	projectStructure->projectBody = projectBody;
 	projectStructure->projectOptionals = projectOptionals;
+	
 	return projectStructure;
+
 }
 
 ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * name, TimeUnit * timeUnit){
@@ -167,6 +169,11 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * 
 	projectStructureCommon->id = id;
 	projectStructureCommon->name = name;
 	projectStructureCommon->timeUnit = timeUnit;
+
+	struct project * newProject = (struct project * )malloc(sizeof *newProject);
+	newProject->projectId=id;
+	newProject->name=name;
+	/*HASH_ADD_KEYPTR(hh, projects, newProject->projectId ,strlen(newProject->projectId ), newProject); */
 	return projectStructureCommon;
 }
 

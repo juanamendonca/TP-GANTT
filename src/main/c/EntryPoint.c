@@ -9,6 +9,8 @@
 #include "shared/Logger.h"
 #include "shared/String.h"
 
+struct project * projects = NULL; //Symbol table
+
 /**
  * The main entry-point of the entire application.
  */
@@ -19,6 +21,9 @@ const int main(const int count, const char ** arguments) {
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
 	initializeGeneratorModule();
+
+	projects = (struct project *) malloc(sizeof *projects); //Symbol table
+
 
 	// Logs the arguments of the application.
 	for (int k = 0; k < count; ++k) {
