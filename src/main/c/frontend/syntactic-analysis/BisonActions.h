@@ -7,8 +7,8 @@
 #include "AbstractSyntaxTree.h"
 #include "SyntacticAnalyzer.h"
 #include <stdlib.h>
-#include "../../shared/symbol_table.h"
 
+extern struct project * projects; //Symbol table
 
 
 /** Initialize module's internal state. */

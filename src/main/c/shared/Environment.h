@@ -4,7 +4,6 @@
 #include "Type.h"
 #include <stdlib.h>
 #include <string.h>
-#include "symbol_table.h"
 
 /**
  * Analog to "getStringOrDefault", but returning true if the string is exactly

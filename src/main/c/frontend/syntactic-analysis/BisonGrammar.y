@@ -1,7 +1,6 @@
 %{
 
 #include "BisonActions.h"
-extern List symbolTable;
 
 %}
 
@@ -134,10 +133,7 @@ program: projectStructure												{ $$ = ProjectStructureProgramSemanticActio
 projectStructure: projectStructureCommon projectOptionals projectBody   { $$ = OptionalsProjectStructureSemanticAction($1, $2, $3); } 
 	;
 
-projectStructureCommon: PROJECT ID NAME FORMAT timeUnit					{ 
-
-	
-	$$ = ProjectStructureCommonSemanticAction($2, $3, $5); }
+projectStructureCommon: PROJECT ID NAME FORMAT timeUnit					{ $$ = ProjectStructureCommonSemanticAction($2, $3, $5); }
 	;
 
 timeUnit: HOUR															{ $$ = NULL; }

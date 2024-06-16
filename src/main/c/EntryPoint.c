@@ -9,7 +9,7 @@
 #include "shared/Logger.h"
 #include "shared/String.h"
 
-List symbolTable;
+struct project * projects = NULL; //Symbol table
 
 /**
  * The main entry-point of the entire application.
@@ -21,9 +21,10 @@ const int main(const int count, const char ** arguments) {
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
 	//initializeGeneratorModule();
-	symbolTable.head = NULL;
-	symbolTable.length = 0;
-	symbolTable.current_scope =0;
+
+	projects = (struct project *) malloc(sizeof *projects); //Symbol table
+
+
 	// Logs the arguments of the application.
 	for (int k = 0; k < count; ++k) {
 		logDebugging(logger, "Argument %d: \"%s\"", k, arguments[k]);

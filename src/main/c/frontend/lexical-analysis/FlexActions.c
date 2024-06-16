@@ -94,6 +94,8 @@ Token SpecificDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) 
 Token ProjectLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->token = PROJECT;
+	return PROJECT;
+
 }
 
 Token FormatLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {

@@ -5,7 +5,6 @@
 #include "../../shared/Logger.h"
 #include "../../shared/String.h"
 #include "../../shared/Type.h"
-#include "../../shared/symbol_table.h"
 #include "../syntactic-analysis/AbstractSyntaxTree.h"
 #include "../syntactic-analysis/BisonParser.h"
 #include "LexicalAnalyzerContext.h"
