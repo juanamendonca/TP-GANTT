@@ -17,7 +17,7 @@ void shutdownAbstractSyntaxTreeModule();
 typedef enum RecursiveType RecursiveType;
 typedef enum ProjectOptionalsType ProjectOptionalsType;
 typedef enum TaskLengthFormatType TaskLengthFormatType;
-typedef enum TimeUnitType;
+typedef enum TimeUnitType TimeUnitType;
 
 typedef struct Program Program;
 typedef struct ProjectStructure ProjectStructure;
@@ -64,11 +64,11 @@ enum TaskLengthFormatType{
 };
 
 enum TimeUnitType{
-	HOUR,
-	DAY,
-	WEEK,
-	MONTH,
-	DATE
+	HOUR_TYPE,
+	DAY_TYPE,
+	WEEK_TYPE,
+	MONTH_TYPE,
+	DATE_TYPE
 };
 
 struct BodyCategoriesOption{
