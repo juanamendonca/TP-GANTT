@@ -3,6 +3,7 @@
 /* MODULE INTERNAL STATE */
 
 static Logger * _logger = NULL;
+static char *currentProjectId;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
@@ -171,15 +172,16 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * 
 	projectStructureCommon->timeUnit = timeUnit;
 
 	
-    struct project *newProject;
-	HASH_FIND_STR(projects, id,newProject);
+    struct Project *newProject;
+	HASH_FIND_STR(projects, id, newProject);
 
 	if(newProject == NULL){
-		newProject = malloc(sizeof(struct project));
+		newProject = malloc(sizeof(struct Project));
 		newProject->projectId = id;
     	newProject->name = name;
 		// Agregar el proyecto a la tabla hash
 		HASH_ADD_KEYPTR(hh, projects,newProject->projectId, strlen(newProject->projectId), newProject); 
+		currentProjectId = id;
 	}
 	else{
 		logError(_logger, "Same ID's project definition", flexCurrentContext());
@@ -192,6 +194,15 @@ TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TimeUnit * timeUnit = calloc(1,sizeof(TimeUnit));
 	timeUnit->type = type;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		project->format = (int) type;
+		printf("%s", currentProjectId);
+	}
+
 	return timeUnit;
 }
 

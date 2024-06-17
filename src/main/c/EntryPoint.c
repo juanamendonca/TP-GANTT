@@ -9,7 +9,7 @@
 #include "shared/Logger.h"
 #include "shared/String.h"
 
-struct project * projects = NULL; //Symbol table
+struct Project * projects = NULL; //Symbol table
 
 /**
  * The main entry-point of the entire application.

@@ -8,7 +8,7 @@
 #include "SyntacticAnalyzer.h"
 #include <stdlib.h>
 
-extern struct project * projects; //Symbol table
+extern struct Project * projects; //Symbol table
 
 
 /** Initialize module's internal state. */

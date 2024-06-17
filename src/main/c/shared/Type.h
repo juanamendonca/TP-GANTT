@@ -10,13 +10,13 @@ typedef enum {
 
 typedef int Token;
 
-struct category{
+struct Category{
     char * categoryId;            /* we'll use this field as the key */
 	char *name;
     UT_hash_handle hh; /* makes this structure hashable */
 };
 
-struct task{
+struct Task{
     char * taskId;            /* we'll use this field as the key */
 	char *name;
     int lengthStart;
@@ -31,12 +31,12 @@ struct task{
 };
 
 // Main Hash Table
-struct project{
+struct Project{
     char * projectId;            /* we'll use this field as the key */
 	char *name;
 	struct task * tasks; // Hashtable de tareas (CLAVE es el id, VALOR)
 	struct category * categories; // Hashtable de CATEGORIAS (CLAVE es el id, VALOR)
-	char * format;
+	int format;
     char *depends_on;
     char **with;
     int max_points;

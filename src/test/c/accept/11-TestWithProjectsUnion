@@ -1,4 +1,4 @@
-project b "ProyectoPadre" format day {
+project a "ProyectoPadre" format day {
     task a "TareaInicial" length [2-3]
     task b "TareaIntermedia" length [3-5] depends_on a.a
 }
