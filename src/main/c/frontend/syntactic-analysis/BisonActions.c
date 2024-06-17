@@ -3,7 +3,8 @@
 /* MODULE INTERNAL STATE */
 
 static Logger * _logger = NULL;
-static char *currentProjectId;
+static char * currentProjectId = NULL;
+static char * currentTaskId = NULL;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
@@ -83,10 +84,20 @@ TaskLengthFormat * DateLengthFormatSemanticAction(char * startDate, char * finis
 	return taskLengthFormat;
 }
 
-TaskStructure * OptionalsStructureSemanticAction(char * id, char * name, TaskLengthFormat * taskLengthFormat, TaskOptionals * taskOptionals){
+TaskId * taskIdSemanticAction(char * id){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	TaskId * taskId = calloc(1,sizeof(TaskId));
+	taskId->id = id;
+
+	currentTaskId = id;
+
+	return taskId;
+}
+
+TaskStructure * OptionalsStructureSemanticAction(TaskId * taskId, char * name, TaskLengthFormat * taskLengthFormat, TaskOptionals * taskOptionals){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TaskStructure * taskStructure = calloc(1,sizeof(TaskStructure));
-	taskStructure->id = id;
+	taskStructure->taskId = taskId;
 	taskStructure->name = name;
 	taskStructure->taskLengthFormat = taskLengthFormat;
 	taskStructure->taskOptionals = taskOptionals;
@@ -164,30 +175,35 @@ ProjectStructure * OptionalsProjectStructureSemanticAction(ProjectStructureCommo
 
 }
 
-ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * name, TimeUnit * timeUnit){
+ProjectStructureCommon * ProjectStructureCommonSemanticAction(ProjectId * projectId, char * name, TimeUnit * timeUnit){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ProjectStructureCommon * projectStructureCommon = calloc(1,sizeof(ProjectStructureCommon));
-	projectStructureCommon->id = id;
+	projectStructureCommon->projectId = projectId;
 	projectStructureCommon->name = name;
 	projectStructureCommon->timeUnit = timeUnit;
 
 	
-    struct Project *newProject;
-	HASH_FIND_STR(projects, id, newProject);
+    struct Project *Project;
+	HASH_FIND_STR(projects, currentProjectId, Project);
 
-	if(newProject == NULL){
-		newProject = malloc(sizeof(struct Project));
-		newProject->projectId = id;
-    	newProject->name = name;
-		// Agregar el proyecto a la tabla hash
-		HASH_ADD_KEYPTR(hh, projects,newProject->projectId, strlen(newProject->projectId), newProject); 
-		currentProjectId = id;
-	}
-	else{
-		logError(_logger, "Same ID's project definition", flexCurrentContext());
+	if(Project != NULL){
+		Project->projectId = projectId->id;
+    	Project->name = name;
+	} else {
+		printf("Error");
 	}
     
 	return projectStructureCommon;
+}
+
+ProjectId * projectIdSemanticAction(char * id){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ProjectId * projectId = calloc(1,sizeof(ProjectId));
+	projectId->id = id;
+
+	currentProjectId = id;
+
+	return projectId;
 }
 
 TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
@@ -195,12 +211,17 @@ TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
 	TimeUnit * timeUnit = calloc(1,sizeof(TimeUnit));
 	timeUnit->type = type;
 
-	struct Project *project;
-	HASH_FIND_STR(projects, currentProjectId, project);
+	struct Project *newProject;
+	HASH_FIND_STR(projects, currentProjectId, newProject);
 
-	if(project != NULL){
-		project->format = (int) type;
-		printf("%s", currentProjectId);
+	if(newProject == NULL){
+		newProject = malloc(sizeof(struct Project));
+		newProject->format = (int) type;
+		// Agregar el proyecto a la tabla hash
+		HASH_ADD_KEYPTR(hh, projects, currentProjectId, strlen(currentProjectId), newProject);
+	}
+	else{
+		logError(_logger, "Same ID's project definition", flexCurrentContext());
 	}
 
 	return timeUnit;

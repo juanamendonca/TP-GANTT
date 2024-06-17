@@ -133,10 +133,18 @@ void releaseTaskLengthFormat(TaskLengthFormat * taskLengthFormat) {
     }
 }
 
+void releaseTaskId(TaskId * taskId){
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (taskId != NULL){
+        free(taskId->id);
+        free(taskId);
+    }
+}
+
 void releaseTaskStructure(TaskStructure * taskStructure) {
     logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (taskStructure != NULL) {
-        free(taskStructure->id);
+        releaseTaskId(taskStructure->taskId);
         free(taskStructure->name);
         releaseTaskLengthFormat(taskStructure->taskLengthFormat);
         releaseTaskOptionals(taskStructure->taskOptionals);
@@ -198,10 +206,18 @@ void releaseProjectOptionals(ProjectOptionals * projectOptionals) {
     }
 }
 
+void releaseProjectId(ProjectId * projectId){
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if(projectId != NULL){
+        free(projectId->id);
+        free(projectId);
+    }
+}
+
 void releaseProjectStructureCommon(ProjectStructureCommon * projectStructureCommon) {
     logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (projectStructureCommon != NULL) {
-        free(projectStructureCommon->id);
+        releaseProjectId(projectStructureCommon->projectId);
         free(projectStructureCommon->name);
         free(projectStructureCommon->timeUnit);
         free(projectStructureCommon);

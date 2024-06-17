@@ -27,7 +27,7 @@ CategoryId * CategoryIdSemanticAction(char * id);
 TaskOptionals * TaskOptionalSemanticAction(CategoryId * categoryId, PointsInteger * pointsInteger, DependsOnId * dependsOnId, Unique * unique);
 TaskLengthFormat * IntervalLengthFormatSemanticAction(int leftInterval, int rightInterval);
 TaskLengthFormat * DateLengthFormatSemanticAction(char * startDate, char * finishDate);
-TaskStructure * OptionalsStructureSemanticAction(char * id, char * name, TaskLengthFormat * taskLengthFormat, TaskOptionals * taskOptionals);
+TaskStructure * OptionalsStructureSemanticAction(TaskId * taskId, char * name, TaskLengthFormat * taskLengthFormat, TaskOptionals * taskOptionals);
 TaskList * StructureRecursiveListSemanticAction(TaskList * recursiveTaskList, TaskStructure * taskStructure);
 TaskList * StructureListSemanticAction(TaskStructure * taskStructure);
 ProjectBody * OptionalsProjectBodySemanticAction(ProjectBodyOptionals * projectBodyOptionals, TaskList * taskList);
@@ -45,8 +45,10 @@ MaxPoints * MaxPointsSemanticAction(int points);
 CategoriesId * CategoriesIdSemanticAction(char * id, char * name, BodyCategoriesOption * bodyCategoriesOption);
 MaxTasks * MaxTasksSemanticAction(int tasks);
 ProjectBodyOptionals * ProjectBodyOptionalsSemanticAction(MaxTasks * maxTasks, CategoriesId * categoriesId, MaxPoints * maxPoints, ProjectStart * projectStart);
-ProjectStructureCommon * ProjectStructureCommonSemanticAction(char * id, char * name, TimeUnit * timeUnit);
+ProjectStructureCommon * ProjectStructureCommonSemanticAction(ProjectId * projectId, char * name, TimeUnit * timeUnit);
 TimeUnit * TimeUnitSemanticAction(TimeUnitType type);
+ProjectId * projectIdSemanticAction(char * id);
+TaskId * taskIdSemanticAction(char * id);
 
 
 #endif

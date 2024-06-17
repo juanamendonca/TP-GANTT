@@ -37,6 +37,8 @@
 	TaskOptionals * taskOptionals;
 	TaskOptionDependsOn * taskOptionDependsOn;
 	Program * program;
+	ProjectId * projectId;
+	TaskId * taskId;
 }
 
 /**
@@ -113,6 +115,8 @@
 %type <maxPoints> maxPoints
 %type <categoriesId> categoriesId
 %type <maxTasks> maxTasks
+%type <projectId> projectId
+%type <taskId> taskId
 
 
 
@@ -133,7 +137,10 @@ program: projectStructure												{ $$ = ProjectStructureProgramSemanticActio
 projectStructure: projectStructureCommon projectOptionals projectBody   { $$ = OptionalsProjectStructureSemanticAction($1, $2, $3); } 
 	;
 
-projectStructureCommon: PROJECT ID NAME FORMAT timeUnit					{ $$ = ProjectStructureCommonSemanticAction($2, $3, $5); }
+projectStructureCommon: PROJECT projectId NAME FORMAT timeUnit			{ $$ = ProjectStructureCommonSemanticAction($2, $3, $5); }
+	;
+
+projectId: ID															{ $$ = projectIdSemanticAction($1); }
 	;
 
 timeUnit: HOUR															{ $$ = TimeUnitSemanticAction(HOUR_TYPE); }
@@ -161,7 +168,10 @@ taskList: taskStructure													{ $$ = StructureListSemanticAction($1); }
 	| taskList taskStructure											{ $$ = StructureRecursiveListSemanticAction($1, $2); }
 	;
 
-taskStructure: TASK ID NAME taskLengthFormat taskOptionals				{ $$ = OptionalsStructureSemanticAction($2, $3, $4, $5); }
+taskStructure: TASK taskId NAME taskLengthFormat taskOptionals			{ $$ = OptionalsStructureSemanticAction($2, $3, $4, $5); }
+	;
+
+taskId: ID																{ $$ = taskIdSemanticAction($1); }
 	;
 
 taskLengthFormat: START SPECIFIC_DATE FINISH SPECIFIC_DATE				{ $$ = DateLengthFormatSemanticAction($2, $4); }

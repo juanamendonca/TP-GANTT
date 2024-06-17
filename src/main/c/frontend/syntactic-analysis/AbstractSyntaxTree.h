@@ -41,6 +41,8 @@ typedef struct TaskOptionals TaskOptionals;
 typedef struct TaskOptionDependsOn TaskOptionDependsOn;
 typedef struct ProjectBodyOptionals ProjectBodyOptionals;
 typedef struct BodyCategoriesOption BodyCategoriesOption;
+typedef struct ProjectId ProjectId;
+typedef struct TaskId TaskId;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -147,8 +149,12 @@ struct TaskLengthFormat {
 	TaskLengthFormatType type;
 };
 
-struct TaskStructure {
+struct TaskId {
 	char * id;
+};
+
+struct TaskStructure {
+	TaskId * taskId;
 	char * name;
 	TaskLengthFormat * taskLengthFormat;
 	TaskOptionals * taskOptionals;
@@ -197,8 +203,12 @@ struct TimeUnit{
 	TimeUnitType type;
 };
 
-struct ProjectStructureCommon{
+struct ProjectId{
 	char * id;
+};
+
+struct ProjectStructureCommon{
+	ProjectId * projectId;
 	char * name;
 	TimeUnit * timeUnit;
 };
