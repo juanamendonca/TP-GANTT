@@ -1,7 +1,8 @@
 #ifndef TYPE_HEADER
 #define TYPE_HEADER
 #include "uthash.h" 
-//#include "../frontend/syntactic-analysis/AbstractSyntaxTree.h"
+
+#define MAX_LIST 100
 
 typedef enum {
 	false = 0,
@@ -21,27 +22,27 @@ struct Task{
 	char *name;
     int lengthStart;
     int lengthFinish;
-    char *depends_on;
     char *start;
     char *finish;
     int points;
     char *category;
     char *unique;
     UT_hash_handle hh; /* makes this structure hashable */
+    char *depends_on[MAX_LIST];
 };
 
 // Main Hash Table
 struct Project{
     char * projectId;            /* we'll use this field as the key */
-	char *name;
-	struct task * tasks; // Hashtable de tareas (CLAVE es el id, VALOR)
-	struct category * categories; // Hashtable de CATEGORIAS (CLAVE es el id, VALOR)
+	char * name;
+	struct Task * tasks; // Hashtable de tareas (CLAVE es el id, VALOR)
+	struct Category * categories; // Hashtable de CATEGORIAS (CLAVE es el id, VALOR)
 	int format;
-    char *depends_on;
-    char **with;
+    char * depends_on;
     int max_points;
     int max_tasks;
     UT_hash_handle hh; /* makes this structure hashable */
+    char * with[MAX_LIST];
 };
 
 

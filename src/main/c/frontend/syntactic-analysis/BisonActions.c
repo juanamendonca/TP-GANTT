@@ -5,6 +5,8 @@
 static Logger * _logger = NULL;
 static char * currentProjectId = NULL;
 static char * currentTaskId = NULL;
+static int withCount = 0;
+static int dependsCount = 0;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
@@ -39,6 +41,21 @@ DependsOnId * DependsOnIdSemanticAction(char * id1, char * id2, TaskOptionDepend
 	dependsOnId->id1 = id1;
 	dependsOnId->id2 = id2;
 	dependsOnId->taskOptionDependsOn = taskOptionDependsOn;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		dependsCount = 0;
+		struct Task *task;
+		HASH_FIND_STR(projects->tasks, currentTaskId, task);
+
+		if(task != NULL){
+			task->depends_on[dependsCount++] = id2;
+		}
+	}
+
+
 	return dependsOnId;
 }
 
@@ -46,6 +63,19 @@ PointsInteger * PointsIntegerSemanticAction(int points){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	PointsInteger * pointsInteger = calloc(1,sizeof(PointsInteger));
 	pointsInteger->points = points;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Task *task;
+		HASH_FIND_STR(projects->tasks, currentTaskId, task);
+
+		if(task != NULL){
+			task->points = points;
+		}
+	}
+
 	return pointsInteger;
 }
 
@@ -53,6 +83,19 @@ CategoryId * CategoryIdSemanticAction(char * id){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	CategoryId * categoryId = calloc(1,sizeof(CategoryId));
 	categoryId->id = id;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Task *task;
+		HASH_FIND_STR(projects->tasks, currentTaskId, task);
+
+		if(task != NULL){
+			task->category = id;
+		}
+	}
+
 	return categoryId;
 }
 
@@ -72,6 +115,27 @@ TaskLengthFormat * IntervalLengthFormatSemanticAction(int leftInterval, int righ
 	taskLengthFormat->leftInterval = leftInterval;
 	taskLengthFormat->rightInterval = rightInterval;
 	taskLengthFormat->type = DURATION;
+
+	
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Task *newTask;
+		HASH_FIND_STR(project->tasks, currentTaskId, newTask);
+
+		if(newTask == NULL){
+			newTask = malloc(sizeof(struct Task));
+			newTask->lengthStart = leftInterval;
+			newTask->lengthFinish = rightInterval;
+			// Agregar la tarea a la tabla hash
+			HASH_ADD_KEYPTR(hh, projects->tasks, currentTaskId, strlen(currentTaskId), newTask);
+		}
+		else{
+			logError(_logger, "Same ID's task definition", flexCurrentContext());
+		}
+	}
+
 	return taskLengthFormat;
 }
 
@@ -81,6 +145,26 @@ TaskLengthFormat * DateLengthFormatSemanticAction(char * startDate, char * finis
 	taskLengthFormat->startDate = startDate;
 	taskLengthFormat->finishDate = finishDate;
 	taskLengthFormat->type = TIME_PERIOD;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Task *newTask;
+		HASH_FIND_STR(project->tasks, currentTaskId, newTask);
+
+		if(newTask == NULL){
+			newTask = malloc(sizeof(struct Task));
+			newTask->start = startDate;
+			newTask->finish = finishDate;
+			// Agregar la tarea a la tabla hash
+			HASH_ADD_KEYPTR(hh, projects->tasks, currentTaskId, strlen(currentTaskId), newTask);
+		}
+		else{
+			logError(_logger, "Same ID's task definition", flexCurrentContext());
+		}
+	}
+
 	return taskLengthFormat;
 }
 
@@ -134,6 +218,17 @@ ProjectUnion * IdProjectUnionSemanticAction(ProjectUnion * recursiveProjectUnion
 	ProjectUnion * projectUnion = calloc(1,sizeof(ProjectUnion));
 	projectUnion->projectUnion = recursiveProjectUnion;
 	projectUnion->id = id;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		if(withCount < MAX_LIST){
+			project->with[withCount++] = id;
+		}
+	}
+
+
 	return projectUnion;
 }
 
@@ -144,6 +239,18 @@ ProjectOptionals * BothOptionalsSemanticAction(char * id1, char * id2, ProjectUn
 	projectOptionals->id1 = id2;
 	projectOptionals->projectUnion2 = projectUnion;
 	projectOptionals->type = BOTH;
+
+	withCount = 0;
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		project->depends_on = id1;
+		if(withCount < MAX_LIST){
+			project->with[withCount++] = id2;
+		}
+	}
+
 	return projectOptionals;
 }
 
@@ -153,6 +260,17 @@ ProjectOptionals * ProjectUnionOptionalsSemanticAction(char * id, ProjectUnion *
 	projectOptionals->id1 = id;
 	projectOptionals->projectUnion1 = projectUnion;
 	projectOptionals->type = WITH_P;
+
+	withCount = 0;
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		if(withCount < MAX_LIST){
+			project->with[withCount++] = id;
+		}
+	}
+
 	return projectOptionals;
 }
 
@@ -161,6 +279,14 @@ ProjectOptionals * IdOptionalsSemanticAction(char * id){
 	ProjectOptionals * projectOptionals = calloc(1,sizeof(ProjectOptionals));
 	projectOptionals->id1 = id;
 	projectOptionals->type = DEPENDS_ON_P;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		project->depends_on = id;
+	}
+
 	return projectOptionals;
 }
 
@@ -183,14 +309,12 @@ ProjectStructureCommon * ProjectStructureCommonSemanticAction(ProjectId * projec
 	projectStructureCommon->timeUnit = timeUnit;
 
 	
-    struct Project *Project;
-	HASH_FIND_STR(projects, currentProjectId, Project);
+    struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
 
-	if(Project != NULL){
-		Project->projectId = projectId->id;
-    	Project->name = name;
-	} else {
-		printf("Error");
+	if(project != NULL){
+		project->projectId = projectId->id;
+    	project->name = name;
 	}
     
 	return projectStructureCommon;
@@ -217,6 +341,8 @@ TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
 	if(newProject == NULL){
 		newProject = malloc(sizeof(struct Project));
 		newProject->format = (int) type;
+		newProject->tasks = NULL;
+		newProject->categories = NULL;
 		// Agregar el proyecto a la tabla hash
 		HASH_ADD_KEYPTR(hh, projects, currentProjectId, strlen(currentProjectId), newProject);
 	}
@@ -266,6 +392,19 @@ TaskOptionDependsOn * TaskOptionDependsOnSemanticAction(TaskOptionDependsOn * re
 	taskOptionDependsOn->id=id;
 	taskOptionDependsOn->id2=id2;
 	taskOptionDependsOn->taskOptionDependsOn = recursiveTaskOptionDependsOn;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Task *task;
+		HASH_FIND_STR(projects->tasks, currentTaskId, task);
+
+		if(task != NULL){
+			task->depends_on[dependsCount++] = id2;
+		}
+	}
+
 	return taskOptionDependsOn;
 }
 
@@ -283,6 +422,14 @@ MaxTasks * MaxTasksSemanticAction(int tasks){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MaxTasks * maxTasks = calloc(1, sizeof(MaxTasks));
 	maxTasks->tasks = tasks;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		project->max_tasks = tasks;
+	}
+
 	return maxTasks;
 }
 
@@ -292,6 +439,25 @@ CategoriesId * CategoriesIdSemanticAction(char * id, char * name, BodyCategories
 	categoriesId->id = id;
 	categoriesId->name = name;
 	categoriesId->bodyCategoriesOption = bodyCategoriesOption;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Category *newCategory;
+		HASH_FIND_STR(project->categories, id, newCategory);
+
+		if(newCategory == NULL){
+			newCategory = malloc(sizeof(struct Category));
+			newCategory->name = name;
+			// Agregar la tarea a la tabla hash
+			HASH_ADD_KEYPTR(hh, projects->categories, id, strlen(id), newCategory);
+		}
+		else{
+			logError(_logger, "Same ID's Category definition", flexCurrentContext());
+		}
+	}
+
 	return categoriesId;
 }
 
@@ -299,6 +465,14 @@ MaxPoints * MaxPointsSemanticAction(int points){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MaxPoints * maxPoints = calloc(1, sizeof(MaxPoints));
 	maxPoints->points = points;
+	
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		project->max_points = points;
+	}
+
 	return maxPoints;
 }
 
@@ -316,5 +490,25 @@ BodyCategoriesOption * RecursiveCategoriesOptionSemanticAction(BodyCategoriesOpt
 	bodyCategoriesOption->id=id;
 	bodyCategoriesOption->name=name;
 	bodyCategoriesOption->bodyCategoriesOption = recursiveBodyCategoriesOption;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Category *newCategory;
+		HASH_FIND_STR(project->categories, id, newCategory);
+
+		if(newCategory == NULL){
+			newCategory = malloc(sizeof(struct Category));
+			newCategory->name = name;
+			// Agregar la tarea a la tabla hash
+			HASH_ADD_KEYPTR(hh, projects->categories, id, strlen(id), newCategory);
+		}
+		else{
+			logError(_logger, "Same ID's Category definition", flexCurrentContext());
+		}
+	}
+
+
 	return bodyCategoriesOption;
 }
