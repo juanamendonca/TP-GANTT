@@ -3,5 +3,5 @@ project a "Proyecto6" format day {
     task a "Tarea1" length [2-4] points 3 
     task b "Tarea2" length [3-5] points 4 
     task c "Tarea3" length [1-2] points 2
-    task d "Tarea4" length [4-6] points 5
+    task d "Tarea4" length [4-6] points 1
 }

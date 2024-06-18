@@ -21,7 +21,7 @@ const int main(const int count, const char ** arguments) {
 	initializeBisonActionsModule();
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
-	//initializeGeneratorModule();
+	initializeGeneratorModule();
 
 
 	// Logs the arguments of the application.
@@ -42,7 +42,7 @@ const int main(const int count, const char ** arguments) {
 		Program * program = compilerState.abstractSyntaxtTree;
 		// Type-Checking
 		// Computation
-		//generate(&compilerState);
+		generate(&compilerState);
 		logDebugging(logger, "Releasing AST resources...");
 		releaseProgram(program);
 	}
@@ -53,7 +53,7 @@ const int main(const int count, const char ** arguments) {
 
 
 	logDebugging(logger, "Releasing modules resources...");
-	//shutdownGeneratorModule();
+	shutdownGeneratorModule();
 	shutdownAbstractSyntaxTreeModule();
 	shutdownSyntacticAnalyzerModule();
 	shutdownBisonActionsModule();

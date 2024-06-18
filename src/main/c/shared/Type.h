@@ -27,6 +27,7 @@ struct Task{
     int points;
     char *category;
     char *unique;
+    int base;
     UT_hash_handle hh; /* makes this structure hashable */
     char *depends_on[MAX_LIST];
 };
@@ -41,6 +42,8 @@ struct Project{
     char * depends_on;
     int max_points;
     int max_tasks;
+    int projectNumber;
+    int baseFlag;
     UT_hash_handle hh; /* makes this structure hashable */
     char * with[MAX_LIST];
 };

@@ -9,4 +9,6 @@ project b "ProyectoHijo" format day depends_on_project a {
     task c "TareaHijo3" length [1-2] depends_on b.b 
 }
 
-project c "UnionDeProyectos" format day with a, b { }
+project c "UnionDeProyectos" format day with a, b { 
+    task a "tareaUnion" length [2-5]
+}

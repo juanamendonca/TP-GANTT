@@ -160,8 +160,7 @@ projectUnion:															{ $$ = NULL; }
 	| projectUnion COMMA ID												{ $$ = IdProjectUnionSemanticAction($1, $3); } 
 	;
 
-projectBody: OPEN_BRACES CLOSE_BRACES									{ $$ = NULL; }
-	| OPEN_BRACES projectBodyOptionals taskList CLOSE_BRACES			{ $$ = OptionalsProjectBodySemanticAction($2, $3); }
+projectBody: OPEN_BRACES projectBodyOptionals taskList CLOSE_BRACES		{ $$ = OptionalsProjectBodySemanticAction($2, $3); }
 	;
 
 taskList: taskStructure													{ $$ = StructureListSemanticAction($1); }
@@ -195,7 +194,7 @@ dependsOnId:															{ $$ = NULL; }
 	;
 
 unique:																	{ $$ = NULL; }
-	| UNIQUE															{ $$ = NULL; }
+	| UNIQUE															{ Unique * unique = calloc(1,sizeof(Unique)); $$ = unique;}
 	;
 
 taskOptionDependsOn:													{ $$ = NULL; }

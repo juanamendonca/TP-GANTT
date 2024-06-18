@@ -1,5 +1,5 @@
 project a "ProyectoComplejo" format day {
-    max_tasks 5
+    max_tasks 6
     categories a "Desarrollo", b "Pruebas", c "Implementación"
     project_start 2024-04-01 
     task a "Diseño de la interfaz" length [2] category a points 1

@@ -7,6 +7,7 @@ static char * currentProjectId = NULL;
 static char * currentTaskId = NULL;
 static int withCount = 0;
 static int dependsCount = 0;
+static int projectCount = 0;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
@@ -52,6 +53,7 @@ DependsOnId * DependsOnIdSemanticAction(char * id1, char * id2, TaskOptionDepend
 
 		if(task != NULL){
 			task->depends_on[dependsCount++] = id2;
+			task->depends_on[dependsCount] = NULL;
 		}
 	}
 
@@ -128,8 +130,10 @@ TaskLengthFormat * IntervalLengthFormatSemanticAction(int leftInterval, int righ
 			newTask = malloc(sizeof(struct Task));
 			newTask->lengthStart = leftInterval;
 			newTask->lengthFinish = rightInterval;
+			newTask->base = 0;
+			newTask->taskId = currentTaskId;
 			// Agregar la tarea a la tabla hash
-			HASH_ADD_KEYPTR(hh, projects->tasks, currentTaskId, strlen(currentTaskId), newTask);
+			HASH_ADD_KEYPTR(hh, project->tasks, currentTaskId, strlen(currentTaskId), newTask);
 		}
 		else{
 			logError(_logger, "Same ID's task definition", flexCurrentContext());
@@ -157,8 +161,10 @@ TaskLengthFormat * DateLengthFormatSemanticAction(char * startDate, char * finis
 			newTask = malloc(sizeof(struct Task));
 			newTask->start = startDate;
 			newTask->finish = finishDate;
+			newTask->base = 0;
+			newTask->taskId = currentTaskId;
 			// Agregar la tarea a la tabla hash
-			HASH_ADD_KEYPTR(hh, projects->tasks, currentTaskId, strlen(currentTaskId), newTask);
+			HASH_ADD_KEYPTR(hh, project->tasks, currentTaskId, strlen(currentTaskId), newTask);
 		}
 		else{
 			logError(_logger, "Same ID's task definition", flexCurrentContext());
@@ -185,6 +191,19 @@ TaskStructure * OptionalsStructureSemanticAction(TaskId * taskId, char * name, T
 	taskStructure->name = name;
 	taskStructure->taskLengthFormat = taskLengthFormat;
 	taskStructure->taskOptionals = taskOptionals;
+
+	struct Project *project;
+	HASH_FIND_STR(projects, currentProjectId, project);
+
+	if(project != NULL){
+		struct Task *task;
+		HASH_FIND_STR(project->tasks, currentTaskId, task);
+
+		if(task != NULL){
+			task->name = name;
+		}
+	}
+
 	return taskStructure;
 }
 
@@ -343,6 +362,8 @@ TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
 		newProject->format = (int) type;
 		newProject->tasks = NULL;
 		newProject->categories = NULL;
+		newProject->projectNumber = ++projectCount;
+		newProject->baseFlag = 0;
 		// Agregar el proyecto a la tabla hash
 		HASH_ADD_KEYPTR(hh, projects, currentProjectId, strlen(currentProjectId), newProject);
 	}
