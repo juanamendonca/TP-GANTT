@@ -7,4 +7,5 @@ project a "ProyectoComplejo" format day {
     task c "Configuración del entorno de pruebas" length [1] category b points 2
     task d "Ejecución de pruebas unitarias" length [2] category b points 4 depends_on a.c
     task e "Implementación de la funcionalidad principal" length [4] category c points 6 depends_on a.b
+    task f "Pruebas de integración" length [2] category b points 4 depends_on a.d, a.e
 }

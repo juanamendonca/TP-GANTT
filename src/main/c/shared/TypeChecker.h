@@ -29,7 +29,8 @@ Type typecheckTaskList(TaskList *taskList, struct Project *projectData);
 Type typecheckTaskStructure(TaskStructure *taskStructure, struct Project *projectData);
 Type typecheckTaskLengthFormat(TaskLengthFormat *taskLengthFormat, TimeUnitType timeUnit);
 Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projectData);
-Type typecheckTaskOptionDependsOn(DependsOnId *dependsOn, struct Project *projectData);
+Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData);
+Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, struct Project *projectData);
 Type typecheckProjectOptionals(ProjectOptionals *optionals);
 Type typecheckProjectUnion(ProjectUnion *projectUnion);
 

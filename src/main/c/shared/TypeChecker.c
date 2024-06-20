@@ -142,7 +142,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
     bool success = true;
 
     if (taskOptionals->dependsOnId != NULL) {
-        Type dependsOnType = typecheckTaskOptionDependsOn(taskOptionals->dependsOnId, projectData);
+        Type dependsOnType = typecheckDependsOnId(taskOptionals->dependsOnId, projectData);
         if (dependsOnType == BOTTOM) {
             success = false;
         }
@@ -165,7 +165,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
 }
 
 // Validación de las dependencias de una tarea
-Type typecheckTaskOptionDependsOn(DependsOnId *dependsOn, struct Project *projectData) {
+Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData) {
     if (dependsOn == NULL) {
         return TASK_T;
     }
@@ -189,7 +189,40 @@ Type typecheckTaskOptionDependsOn(DependsOnId *dependsOn, struct Project *projec
     }
 
     if (dependsOn->taskOptionDependsOn != NULL) {
-        Type nextDependsOnType = typecheckTaskOptionDependsOn(dependsOn, project);
+        Type nextDependsOnType = typecheckTaskOptionDependsOn(dependsOn->taskOptionDependsOn, project);
+        if (nextDependsOnType == BOTTOM) {
+            success = false;
+        }
+    }
+    return success ? TASK_T : BOTTOM;
+}
+
+// Validación de las dependencias de una tarea
+Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, struct Project *projectData) {
+    if (taskOptionDependsOn == NULL) {
+        return TASK_T;
+    }
+    bool success = true;
+
+    // Verificar que el proyecto referenciado existe en el programa
+    struct Project *project;
+    HASH_FIND_STR(projects, taskOptionDependsOn->id, project);
+    if (project == NULL) {
+        reportError("Error: El Projecto '%s' no ha sido definido.", taskOptionDependsOn->id);
+        success = false;
+        exit(EXIT_FAILURE);
+    }
+    // Verificar que la tarea referenciada existe en el proyecto
+    struct Task *task;
+    HASH_FIND_STR(project->tasks, taskOptionDependsOn->id2, task);
+    if (task == NULL) {
+        reportError("Error: Tarea '%s' no encontrada en el proyecto '%s'.", taskOptionDependsOn->id2, taskOptionDependsOn->id);
+        success = false;
+        exit(EXIT_FAILURE);
+    }
+
+    if (taskOptionDependsOn->taskOptionDependsOn != NULL) {
+        Type nextDependsOnType = typecheckTaskOptionDependsOn(taskOptionDependsOn->taskOptionDependsOn, project);
         if (nextDependsOnType == BOTTOM) {
             success = false;
         }
@@ -302,7 +335,6 @@ bool validateProjectReference(ProjectOptionals *projectOptionals) {
                 break;
         }
     }
-
     return success;
 }
 
