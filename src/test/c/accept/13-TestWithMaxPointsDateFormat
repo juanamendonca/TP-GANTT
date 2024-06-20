@@ -1,0 +1,7 @@
+project a "Proyecto13" format date {
+    max_points 10
+    task a "Tarea1" start 2024-04-01 finish 2024-04-05 points 3
+    task b "Tarea2" start 2024-04-03 finish 2024-04-07 points 4
+    task c "Tarea3" start 2024-04-01 finish 2024-04-03 points 2
+    task d "Tarea4" start 2024-04-05 finish 2024-04-08 points 1
+}

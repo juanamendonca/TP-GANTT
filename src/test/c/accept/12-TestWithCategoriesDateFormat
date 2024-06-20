@@ -1,0 +1,5 @@
+project a "Proyecto12" format date {
+    categories a "Categoria1", b "Categoria2", c "Categoria3"
+    task a "Tarea1" start 2024-04-01 finish 2024-04-05 category a
+    task b "Tarea2" start 2024-04-03 finish 2024-04-07 category b
+}
