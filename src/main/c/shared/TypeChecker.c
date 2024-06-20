@@ -110,8 +110,15 @@ Type typecheckTaskStructure(TaskStructure *taskStructure, struct Project *projec
         return BOTTOM;
     }
 
+    struct Task *taskData;
+    HASH_FIND_STR(projectData->tasks, taskStructure->taskId->id, taskData);
+    if (!taskData) {
+        reportError("Error: Tarea '%s' no encontrada.", taskStructure->taskId->id);
+        return BOTTOM;
+    }
+
     Type lengthFormatType = typecheckTaskLengthFormat(taskStructure->taskLengthFormat, projectData->format);
-    Type optionalsType = typecheckTaskOptionals(taskStructure->taskOptionals, projectData);
+    Type optionalsType = typecheckTaskOptionals(taskStructure->taskOptionals, projectData, taskData);
 
     return (lengthFormatType != BOTTOM && optionalsType != BOTTOM) ? TASK_T : BOTTOM;
 }
@@ -134,7 +141,7 @@ Type typecheckTaskLengthFormat(TaskLengthFormat *taskLengthFormat, TimeUnitType 
 }
 
 // Validación de los opcionales de una tarea
-Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projectData) {
+Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projectData, struct Task *taskData) {
     if (taskOptionals == NULL) {
         return TASK_T;
     }
@@ -142,7 +149,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
     bool success = true;
 
     if (taskOptionals->dependsOnId != NULL) {
-        Type dependsOnType = typecheckDependsOnId(taskOptionals->dependsOnId, projectData);
+        Type dependsOnType = typecheckDependsOnId(taskOptionals->dependsOnId, projectData, taskData);
         if (dependsOnType == BOTTOM) {
             success = false;
         }
@@ -165,7 +172,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
 }
 
 // Validación de las dependencias de una tarea
-Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData) {
+Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData, struct Task *taskData) {
     if (dependsOn == NULL) {
         return TASK_T;
     }
@@ -175,10 +182,25 @@ Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData) {
     struct Project *project;
     HASH_FIND_STR(projects, dependsOn->id1, project);
     if (project == NULL) {
-        reportError("Error: El Projecto '%s' no ha sido definido.", dependsOn->id1);
+        reportError("Error: El Proyecto '%s' no ha sido definido.", dependsOn->id1);
         success = false;
         exit(EXIT_FAILURE);
     }
+
+    //Verificar que los proyectos tengan el mismo formato
+    if(project->format != projectData->format){
+        reportError("Error: El Proyecto '%s' no tiene el mismo formato que el proyecto '%s'.", dependsOn->id1, projectData->projectId);
+        success = false;
+        exit(EXIT_FAILURE);
+    }
+
+    //verificar que la tarea no depende de si misma
+    if(strcmp(dependsOn->id2, taskData->taskId) == 0 && strcmp(dependsOn->id1, projectData->projectId) == 0){
+        reportError("Error: La tarea '%s' depende de si misma", taskData->taskId);
+        success = false;
+        exit(EXIT_FAILURE);
+    }
+
     // Verificar que la tarea referenciada existe en el proyecto
     struct Task *task;
     HASH_FIND_STR(project->tasks, dependsOn->id2, task);
@@ -188,8 +210,17 @@ Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData) {
         exit(EXIT_FAILURE);
     }
 
+    //Verificar que la tarea empieza despues de la finalizacion de la tarea de la cual depende
+    if(projectData->format == DATE_TYPE){
+        if(strcmp(taskData->start, task->finish) < 0){
+        reportError("Error: La tarea '%s' comienza antes que la tarea '%s' (de la cual depende)", taskData->taskId, dependsOn->id2);
+        success = false;
+        exit(EXIT_FAILURE);
+        }
+    }
+
     if (dependsOn->taskOptionDependsOn != NULL) {
-        Type nextDependsOnType = typecheckTaskOptionDependsOn(dependsOn->taskOptionDependsOn, project);
+        Type nextDependsOnType = typecheckTaskOptionDependsOn(dependsOn->taskOptionDependsOn, projectData, taskData);
         if (nextDependsOnType == BOTTOM) {
             success = false;
         }
@@ -198,7 +229,7 @@ Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData) {
 }
 
 // Validación de las dependencias de una tarea
-Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, struct Project *projectData) {
+Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, struct Project *projectData, struct Task *taskData) {
     if (taskOptionDependsOn == NULL) {
         return TASK_T;
     }
@@ -208,10 +239,25 @@ Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, stru
     struct Project *project;
     HASH_FIND_STR(projects, taskOptionDependsOn->id, project);
     if (project == NULL) {
-        reportError("Error: El Projecto '%s' no ha sido definido.", taskOptionDependsOn->id);
+        reportError("Error: El Proyecto '%s' no ha sido definido.", taskOptionDependsOn->id);
         success = false;
         exit(EXIT_FAILURE);
     }
+
+    //Verificar que los proyectos tengan el mismo formato
+    if(project->format != projectData->format){
+        reportError("Error: El Proyecto '%s' no tiene el mismo formato que el proyecto '%s", taskOptionDependsOn->id, projectData->projectId);
+        success = false;
+        exit(EXIT_FAILURE);
+    }
+
+    //verificar que la tarea no depende de si misma
+    if(strcmp(taskOptionDependsOn->id2, taskData->taskId) == 0 && strcmp(taskOptionDependsOn->id, projectData->projectId) == 0){
+        reportError("Error: La tarea '%s' depende de si misma", taskData->taskId);
+        success = false;
+        exit(EXIT_FAILURE);
+    }
+
     // Verificar que la tarea referenciada existe en el proyecto
     struct Task *task;
     HASH_FIND_STR(project->tasks, taskOptionDependsOn->id2, task);
@@ -221,8 +267,17 @@ Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, stru
         exit(EXIT_FAILURE);
     }
 
+    //Verificar que la tarea empieza despues de la finalizacion de la tarea de la cual depende
+    if(projectData->format == DATE_TYPE){
+        if(strcmp(taskData->start, task->finish) < 0){
+        reportError("Error: La tarea '%s' comienza antes que la tarea '%s' (de la cual depende)", taskData->taskId, taskOptionDependsOn->id2);
+        success = false;
+        exit(EXIT_FAILURE);
+        }
+    }
+
     if (taskOptionDependsOn->taskOptionDependsOn != NULL) {
-        Type nextDependsOnType = typecheckTaskOptionDependsOn(taskOptionDependsOn->taskOptionDependsOn, project);
+        Type nextDependsOnType = typecheckTaskOptionDependsOn(taskOptionDependsOn->taskOptionDependsOn, projectData, taskData);
         if (nextDependsOnType == BOTTOM) {
             success = false;
         }
