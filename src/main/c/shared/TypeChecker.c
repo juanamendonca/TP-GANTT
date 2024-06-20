@@ -8,6 +8,7 @@
 bool typecheckProgram(Program *program) {
     if (program == NULL) {
         reportError("Error: Programa vacío.");
+        exit(EXIT_FAILURE);
         return false;
     }
 
@@ -22,6 +23,7 @@ bool typecheckProgram(Program *program) {
 Type typecheckProjectStructure(ProjectStructure *projectStructure) {
     if (projectStructure == NULL) {
         reportError("Error: Estructura de proyecto vacía.");
+        exit(EXIT_FAILURE);
         return BOTTOM;
     }
 
@@ -29,6 +31,7 @@ Type typecheckProjectStructure(ProjectStructure *projectStructure) {
     HASH_FIND_STR(projects, projectStructure->projectStructureCommon->projectId->id, projectData);
     if (!projectData) {
         reportError("Error: Proyecto '%s' no encontrado.", projectStructure->projectStructureCommon->projectId->id);
+        exit(EXIT_FAILURE);
         return BOTTOM;
     }
 
@@ -44,10 +47,11 @@ Type typecheckProjectStructure(ProjectStructure *projectStructure) {
 
 // Validación del cuerpo de un proyecto
 Type typecheckProjectBody(ProjectBody *projectBody, struct Project *projectData) {
-   /*  if (projectBody == NULL) {
+    if (projectBody == NULL) {
         reportError("Error: Cuerpo del proyecto vacío.");
+        exit(EXIT_FAILURE);
         return BOTTOM;
-    } */
+    }
 
     Type optionalsType = typecheckProjectBodyOptionals(projectBody->projectBodyOptionals, projectData, PROJECT_T);
     Type taskListType = typecheckTaskList(projectBody->taskList, projectData);
@@ -107,6 +111,7 @@ Type typecheckTaskList(TaskList *taskList, struct Project *projectData) {
 Type typecheckTaskStructure(TaskStructure *taskStructure, struct Project *projectData) {
     if (taskStructure == NULL) {
         reportError("Error: Estructura de tarea vacía.");
+        exit(EXIT_FAILURE);
         return BOTTOM;
     }
 
@@ -114,6 +119,7 @@ Type typecheckTaskStructure(TaskStructure *taskStructure, struct Project *projec
     HASH_FIND_STR(projectData->tasks, taskStructure->taskId->id, taskData);
     if (!taskData) {
         reportError("Error: Tarea '%s' no encontrada.", taskStructure->taskId->id);
+        exit(EXIT_FAILURE);
         return BOTTOM;
     }
 
@@ -131,11 +137,12 @@ Type typecheckTaskLengthFormat(TaskLengthFormat *taskLengthFormat, TimeUnitType 
         return BOTTOM;
     }
 
-    if (taskLengthFormat->type == TIME_PERIOD && strcmp(taskLengthFormat->startDate,taskLengthFormat->finishDate) >0 ) {
-         reportError("Error: La fecha de comienzo es mayor que la fecha de fin.");
+    if (taskLengthFormat->type == TIME_PERIOD && strcmp(taskLengthFormat->startDate,taskLengthFormat->finishDate) > 0 ) {
+        reportError("Error: La fecha de comienzo es mayor que la fecha de fin.");
         exit(EXIT_FAILURE);
-    } else if (taskLengthFormat->type == DURATION )   {
-       
+    } else if (taskLengthFormat->type == DURATION && taskLengthFormat->rightInterval >= 0 && taskLengthFormat->leftInterval > taskLengthFormat->rightInterval)   {
+        reportError("Error: El extremo izquierdo del intervalo es mayor que el extremo derecho");
+        exit(EXIT_FAILURE);
     }
     return INTERVAL_T;
 }
@@ -157,6 +164,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
     if (taskOptionals->pointsInteger != NULL) {
         if (taskOptionals->pointsInteger->points < 0) {
             reportError("Error: Los puntos de la tarea no pueden ser negativos.");
+            exit(EXIT_FAILURE);
             success = false;
         }
     }
@@ -165,6 +173,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
         HASH_FIND_STR(projectData->categories, taskOptionals->categoryId->id, category);
         if (category == NULL) {
             reportError("Error: Categoría '%s' no definida.", taskOptionals->categoryId->id);
+            exit(EXIT_FAILURE);
             success = false;
         }
     }
@@ -213,7 +222,7 @@ Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData, s
     //Verificar que la tarea empieza despues de la finalizacion de la tarea de la cual depende
     if(projectData->format == DATE_TYPE){
         if(strcmp(taskData->start, task->finish) < 0){
-        reportError("Error: La tarea '%s' comienza antes que la tarea '%s' (de la cual depende)", taskData->taskId, dependsOn->id2);
+        reportError("Error: La tarea '%s' comienza antes que termine la tarea '%s' (de la cual depende)", taskData->taskId, dependsOn->id2);
         success = false;
         exit(EXIT_FAILURE);
         }
@@ -352,8 +361,8 @@ bool validateMaxPoints(ProjectBodyOptionals *optionals, struct Project *projectD
 
     if (totalPoints > optionals->maxPoints->points) {
         reportError("Error: Se excede la cantidad de puntos máximos permitidos en el proyecto '%s'.", projectData->projectId);
-        return false;
         exit(EXIT_FAILURE);
+        return false;
     }
     return true;
 }

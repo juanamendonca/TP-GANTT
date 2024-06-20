@@ -1,0 +1,7 @@
+project a "ProyectoA" format day {
+    task a "Diseño de la interfaz" length [2]
+}
+
+project b "ProyectoB" format week {
+    task a "Diseño de la interfaz" length [2] depends_on a.a
+}

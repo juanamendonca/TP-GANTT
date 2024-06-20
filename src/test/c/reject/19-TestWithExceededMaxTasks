@@ -1,4 +1,4 @@
-project a "Proyecto Complejo" format date {
+project a "Proyecto14" format date {
     max_tasks 6
     categories a "Desarrollo", b "Pruebas", c "Implementación"
     project_start 2024-04-01 
@@ -8,4 +8,5 @@ project a "Proyecto Complejo" format date {
     task d "Ejecución de pruebas unitarias" start 2024-04-05 finish 2024-04-08 category b points 4 depends_on a.c
     task e "Implementación de la funcionalidad principal" start 2024-04-07 finish 2024-04-10 category c points 6 depends_on a.b
     task f "Pruebas de integración" start 2024-04-10 finish 2024-04-16 category b points 4 depends_on a.d, a.e
+    task g "Tarea que excede" start 2024-04-10 finish 2024-04-16 category b points 4
 }

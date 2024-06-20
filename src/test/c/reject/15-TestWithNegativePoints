@@ -1,0 +1,3 @@
+project a "Proyecto15" format day { 
+    task a "Diseño de la interfaz" length [2] category a points -8
+}

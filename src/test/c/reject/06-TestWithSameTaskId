@@ -1,0 +1,4 @@
+project a "Proyecto1" format hour {
+    task a "Tarea1" length [3-5]
+    task a "Tarea2" length [2]
+}

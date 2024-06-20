@@ -137,6 +137,7 @@ TaskLengthFormat * IntervalLengthFormatSemanticAction(int leftInterval, int righ
 		}
 		else{
 			logError(_logger, "Same ID's task definition", flexCurrentContext());
+			exit(EXIT_FAILURE);
 		}
 	}
 
@@ -168,6 +169,7 @@ TaskLengthFormat * DateLengthFormatSemanticAction(char * startDate, char * finis
 		}
 		else{
 			logError(_logger, "Same ID's task definition", flexCurrentContext());
+			exit(EXIT_FAILURE);
 		}
 	}
 
@@ -369,6 +371,7 @@ TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
 	}
 	else{
 		logError(_logger, "Same ID's project definition", flexCurrentContext());
+		exit(EXIT_FAILURE);
 	}
 
 	return timeUnit;
@@ -384,6 +387,7 @@ Program * ProjectStructureRecursiveProgramSemanticAction(CompilerState * compile
 	if (0 < flexCurrentContext()) {
 		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
 		compilerState->succeed = false;
+		exit(EXIT_FAILURE);
 	}
 	else {
 		compilerState->succeed = true;
@@ -400,6 +404,7 @@ Program * ProjectStructureProgramSemanticAction(CompilerState * compilerState, P
 	if (0 < flexCurrentContext()) {
 		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
 		compilerState->succeed = false;
+		exit(EXIT_FAILURE);
 	}
 	else {
 		compilerState->succeed = true;
@@ -476,6 +481,7 @@ CategoriesId * CategoriesIdSemanticAction(char * id, char * name, BodyCategories
 		}
 		else{
 			logError(_logger, "Same ID's Category definition", flexCurrentContext());
+			exit(EXIT_FAILURE);
 		}
 	}
 
@@ -527,6 +533,7 @@ BodyCategoriesOption * RecursiveCategoriesOptionSemanticAction(BodyCategoriesOpt
 		}
 		else{
 			logError(_logger, "Same ID's Category definition", flexCurrentContext());
+			exit(EXIT_FAILURE);
 		}
 	}
 

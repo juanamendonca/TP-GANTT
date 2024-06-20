@@ -1,0 +1,4 @@
+project a "Proyecto" format day {
+    categories a "Desarrollo", b "Pruebas", c "Implementación"
+    task a "Diseño de la interfaz" category d
+}
