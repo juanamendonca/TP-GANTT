@@ -85,10 +85,6 @@ Type typecheckProjectBodyOptionals(ProjectBodyOptionals *optionals, struct Proje
         }
     }
 
-/*     if (optionals->projectStart != NULL) {
-        // ... (Validación de formato de fecha)
-    } */
-
     return success ? projectType : BOTTOM;
 }
 

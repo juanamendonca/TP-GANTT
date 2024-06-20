@@ -34,7 +34,7 @@ Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, stru
 Type typecheckProjectOptionals(ProjectOptionals *optionals);
 Type typecheckProjectUnion(ProjectUnion *projectUnion);
 
-// Función para reportar errores, se podría usar el logger
+// Función para reportar errores
 void reportError(const char *message, ...);
 
 #endif // TYPE_CHECKER_H

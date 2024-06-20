@@ -43,7 +43,7 @@ const int main(const int count, const char ** arguments) {
 		Program * program = compilerState.abstractSyntaxtTree;
 		// Type-Checking
 		typecheckProgram(program);
-		// Computation
+		// Code Generation
 		generate(&compilerState);
 		logDebugging(logger, "Releasing AST resources...");
 		releaseProgram(program);

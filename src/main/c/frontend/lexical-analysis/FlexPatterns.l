@@ -69,15 +69,3 @@
 %%
 
 #include "FlexExport.h"
-
-/* "-"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext()); }
-"*"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext()); }
-"/"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext()); }
-"+"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext()); }
-
-"("									{ return ParenthesisLexemeAction(createLexicalAnalyzerContext()); }
-")"									{ return ParenthesisLexemeAction(createLexicalAnalyzerContext()); }
-
-
-
-[[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); } */

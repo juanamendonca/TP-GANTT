@@ -20,11 +20,6 @@ void shutdownFlexActionsModule();
 /**
  * Flex lexeme processing actions.
  */
-
-void insert_project(const char *id);
-void insert_task(const char *id);
-void insert_category(const char *id);
-
 void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
@@ -60,12 +55,6 @@ Token WithLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token ProjectStartLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token CommaLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token DotLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-
-
-
-
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 

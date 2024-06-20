@@ -241,30 +241,6 @@ Token WithLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	return WITH;
 }
 
-// Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
-// 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-// 	Token token;
-// 	switch (lexicalAnalyzerContext->lexeme[0]) {
-// 		case '-': token = SUB; break;
-// 		case '*': token = MUL; break;
-// 		case '/': token = DIV; break;
-// 		case '+': token = ADD; break;
-// 	}
-// 	lexicalAnalyzerContext->semanticValue->token = token;
-// 	return token;
-// }
-
-// Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
-// 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-// 	Token token;
-// 	switch (lexicalAnalyzerContext->lexeme[0]) {
-// 		case '(': token = OPEN_PARENTHESIS; break;
-// 		case ')': token = CLOSE_PARENTHESIS; break;
-// 	}
-// 	lexicalAnalyzerContext->semanticValue->token = token;
-// 	return token;
-// }
-
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	return UNKNOWN;
