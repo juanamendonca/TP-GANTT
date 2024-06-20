@@ -8,6 +8,7 @@
 #include "shared/Environment.h"
 #include "shared/Logger.h"
 #include "shared/String.h"
+#include "shared/TypeChecker.h"
 
 struct Project * projects = NULL; //Symbol table
 
@@ -41,6 +42,7 @@ const int main(const int count, const char ** arguments) {
 		logDebugging(logger, "Computing expression value...");
 		Program * program = compilerState.abstractSyntaxtTree;
 		// Type-Checking
+		typecheckProgram(program);
 		// Computation
 		generate(&compilerState);
 		logDebugging(logger, "Releasing AST resources...");
