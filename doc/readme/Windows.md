@@ -6,6 +6,9 @@
 * [CMake v3.24.1](https://cmake.org/)
 * [Flex v2.6.4](https://github.com/westes/flex)
 * [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/vs/community/)
+* [Python](https://www.python.org/downloads/windows/)
+* [Pandas](https://pandas.pydata.org/docs/getting_started/index.html)
+* [Plotly](https://plotly.com/python/getting-started/)
 
 ## Install
 
@@ -39,3 +42,12 @@ script\windows\start.bat <program>
 ```
 
 Replace `<program>` with a path to the program file.
+This will generate the file "gantt.py"
+
+## Generate Gantt Chart (.html)
+
+```powershell
+python3 gantt.py
+```
+
+This will generate the Gantt Chart in the file "gantt.html"

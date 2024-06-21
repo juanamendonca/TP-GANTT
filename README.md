@@ -2,9 +2,9 @@
 
 [![✗](https://github.com/agustin-golmar/Flex-Bison-Compiler/actions/workflows/pipeline.yaml/badge.svg?branch=production)](https://github.com/agustin-golmar/Flex-Bison-Compiler/actions/workflows/pipeline.yaml)
 
-# Flex-Bison-Compiler
+# Flex-Bison-Compiler (Gantt)
 
-A base compiler example, developed with Flex and Bison.
+A compiler to create Gantt charts, developed with Flex and Bison.
 
 * [Environment](#environment)
 * [CI/CD](#cicd)
