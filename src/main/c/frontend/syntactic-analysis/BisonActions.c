@@ -366,7 +366,7 @@ TimeUnit * TimeUnitSemanticAction(TimeUnitType type){
 		newProject->categories = NULL;
 		newProject->projectNumber = ++projectCount;
 		newProject->baseFlag = 0;
-		// Agregar el proyecto a la tabla hash
+		// Add the task in the hash table.
 		HASH_ADD_KEYPTR(hh, projects, currentProjectId, strlen(currentProjectId), newProject);
 	}
 	else{
@@ -476,7 +476,7 @@ CategoriesId * CategoriesIdSemanticAction(char * id, char * name, BodyCategories
 		if(newCategory == NULL){
 			newCategory = malloc(sizeof(struct Category));
 			newCategory->name = name;
-			// Agregar la tarea a la tabla hash
+			// Add the task in the hash table.
 			HASH_ADD_KEYPTR(hh, projects->categories, id, strlen(id), newCategory);
 		}
 		else{
@@ -528,7 +528,7 @@ BodyCategoriesOption * RecursiveCategoriesOptionSemanticAction(BodyCategoriesOpt
 		if(newCategory == NULL){
 			newCategory = malloc(sizeof(struct Category));
 			newCategory->name = name;
-			// Agregar la tarea a la tabla hash
+			// Add the task in the hash table.
 			HASH_ADD_KEYPTR(hh, projects->categories, id, strlen(id), newCategory);
 		}
 		else{

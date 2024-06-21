@@ -4,10 +4,10 @@
 #include <string.h>
 
 
-// Validación del programa completo
+// Validation of the entire program
 bool typecheckProgram(Program *program) {
     if (program == NULL) {
-        reportError("Error: Programa vacío.");
+        reportError("Error: Empty program.");
         exit(EXIT_FAILURE);
         return false;
     }
@@ -19,10 +19,10 @@ bool typecheckProgram(Program *program) {
     }
 }
 
-// Validación de la estructura de un proyecto
+// Validation of the project structure
 Type typecheckProjectStructure(ProjectStructure *projectStructure) {
     if (projectStructure == NULL) {
-        reportError("Error: Estructura de proyecto vacía.");
+        reportError("Error: Empty project structure.");
         exit(EXIT_FAILURE);
         return BOTTOM;
     }
@@ -30,25 +30,25 @@ Type typecheckProjectStructure(ProjectStructure *projectStructure) {
     struct Project *projectData;
     HASH_FIND_STR(projects, projectStructure->projectStructureCommon->projectId->id, projectData);
     if (!projectData) {
-        reportError("Error: Proyecto '%s' no encontrado.", projectStructure->projectStructureCommon->projectId->id);
+        reportError("Error: Project '%s' not found.", projectStructure->projectStructureCommon->projectId->id);
         exit(EXIT_FAILURE);
         return BOTTOM;
     }
 
-    // Validación del cuerpo del proyecto
+    //  Validation of the project body
     Type bodyType = typecheckProjectBody(projectStructure->projectBody, projectData);
 
-    // Validación de los opcionales del proyecto
+   // Validation of the  project optionals
     Type optionalType = typecheckProjectOptionals(projectStructure->projectOptionals);
 
-    // El tipo del proyecto es válido si tanto el cuerpo como los opcionales son válidos
+    // The project type is valid if both the body and the optionals are valid
     return (bodyType != BOTTOM && optionalType != BOTTOM) ? PROJECT_T : BOTTOM;
 }
 
-// Validación del cuerpo de un proyecto
+    //  Validation of the project body
 Type typecheckProjectBody(ProjectBody *projectBody, struct Project *projectData) {
     if (projectBody == NULL) {
-        reportError("Error: Cuerpo del proyecto vacío.");
+        reportError("Error: Empty body project.");
         exit(EXIT_FAILURE);
         return BOTTOM;
     }
@@ -56,14 +56,14 @@ Type typecheckProjectBody(ProjectBody *projectBody, struct Project *projectData)
     Type optionalsType = typecheckProjectBodyOptionals(projectBody->projectBodyOptionals, projectData, PROJECT_T);
     Type taskListType = typecheckTaskList(projectBody->taskList, projectData);
 
-    // El cuerpo del proyecto es válido si tanto los opcionales como la lista de tareas son válidos
+// The project body is valid if both the optionals and the task list are valid
     return (optionalsType != BOTTOM && taskListType != BOTTOM) ? PROJECT_T : BOTTOM;
 }
 
-// Validación de los opcionales del cuerpo de un proyecto
+// Validation of the project body optionals
 Type typecheckProjectBodyOptionals(ProjectBodyOptionals *optionals, struct Project *projectData, Type projectType) {
     if (optionals == NULL) {
-        return projectType; // Si no hay opcionales, el tipo del proyecto no cambia
+        return projectType; // If there are not optionals, the type remains the same.
     }
 
     bool success = true;
@@ -76,10 +76,10 @@ Type typecheckProjectBodyOptionals(ProjectBodyOptionals *optionals, struct Proje
     }
     if (optionals->categoriesId != NULL) {
         struct Category *category;
-        // Buscar la categoría en la tabla hash de categorías del proyecto
+        // Search the category in the hash table of an specific project.
         HASH_FIND_STR(projectData->categories, optionals->categoriesId->id, category);
         if (category == NULL) {
-            reportError("Error: Categoría '%s' no definida.", optionals->categoriesId->id);
+            reportError("Error: Category '%s' not defined.", optionals->categoriesId->id);
             success = false;
             exit(EXIT_FAILURE);
         }
@@ -88,7 +88,7 @@ Type typecheckProjectBodyOptionals(ProjectBodyOptionals *optionals, struct Proje
     return success ? projectType : BOTTOM;
 }
 
-// Validación de la lista de tareas
+// Task list validation
 Type typecheckTaskList(TaskList *taskList, struct Project *projectData) {
     if (taskList == NULL) {
         return BOTTOM; 
@@ -103,10 +103,10 @@ Type typecheckTaskList(TaskList *taskList, struct Project *projectData) {
     }
 }
 
-// Validación de la estructura de una tarea
+// Validation of task structure
 Type typecheckTaskStructure(TaskStructure *taskStructure, struct Project *projectData) {
     if (taskStructure == NULL) {
-        reportError("Error: Estructura de tarea vacía.");
+        reportError("Error: Task structure empty.");
         exit(EXIT_FAILURE);
         return BOTTOM;
     }
@@ -114,7 +114,7 @@ Type typecheckTaskStructure(TaskStructure *taskStructure, struct Project *projec
     struct Task *taskData;
     HASH_FIND_STR(projectData->tasks, taskStructure->taskId->id, taskData);
     if (!taskData) {
-        reportError("Error: Tarea '%s' no encontrada.", taskStructure->taskId->id);
+        reportError("Error: Task '%s' not found.", taskStructure->taskId->id);
         exit(EXIT_FAILURE);
         return BOTTOM;
     }
@@ -125,25 +125,24 @@ Type typecheckTaskStructure(TaskStructure *taskStructure, struct Project *projec
     return (lengthFormatType != BOTTOM && optionalsType != BOTTOM) ? TASK_T : BOTTOM;
 }
 
-// Validación del formato de duración de una tarea
+// Validation of task duration format 
 Type typecheckTaskLengthFormat(TaskLengthFormat *taskLengthFormat, TimeUnitType timeUnit) {
     if (taskLengthFormat == NULL) {
-        reportError("Error: Formato de duración de tarea no especificado.");
+        reportError("Error: Format not specified.");
         exit(EXIT_FAILURE);
         return BOTTOM;
     }
 
     if (taskLengthFormat->type == TIME_PERIOD && strcmp(taskLengthFormat->startDate,taskLengthFormat->finishDate) > 0 ) {
-        reportError("Error: La fecha de comienzo es mayor que la fecha de fin.");
+        reportError("Error: The start date is later than the end date.");
         exit(EXIT_FAILURE);
     } else if (taskLengthFormat->type == DURATION && taskLengthFormat->rightInterval >= 0 && taskLengthFormat->leftInterval > taskLengthFormat->rightInterval)   {
-        reportError("Error: El extremo izquierdo del intervalo es mayor que el extremo derecho");
+        reportError("Error: The left interval bound is greater than the right interval bound.");
         exit(EXIT_FAILURE);
     }
     return INTERVAL_T;
 }
-
-// Validación de los opcionales de una tarea
+// Validation of task optionals format 
 Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projectData, struct Task *taskData) {
     if (taskOptionals == NULL) {
         return TASK_T;
@@ -159,7 +158,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
     }
     if (taskOptionals->pointsInteger != NULL) {
         if (taskOptionals->pointsInteger->points < 0) {
-            reportError("Error: Los puntos de la tarea no pueden ser negativos.");
+            reportError("Error: Task points cannot be negative.");
             exit(EXIT_FAILURE);
             success = false;
         }
@@ -168,7 +167,7 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
         struct Category *category;
         HASH_FIND_STR(projectData->categories, taskOptionals->categoryId->id, category);
         if (category == NULL) {
-            reportError("Error: Categoría '%s' no definida.", taskOptionals->categoryId->id);
+            reportError("Error: Category '%s' not defined.", taskOptionals->categoryId->id);
             exit(EXIT_FAILURE);
             success = false;
         }
@@ -176,49 +175,48 @@ Type typecheckTaskOptionals(TaskOptionals *taskOptionals, struct Project *projec
     return success ? TASK_T : BOTTOM;
 }
 
-// Validación de las dependencias de una tarea
+// Validation of task dependencies
 Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData, struct Task *taskData) {
     if (dependsOn == NULL) {
         return TASK_T;
     }
     bool success = true;
 
-    // Verificar que el proyecto referenciado existe en el programa
     struct Project *project;
     HASH_FIND_STR(projects, dependsOn->id1, project);
     if (project == NULL) {
-        reportError("Error: El Proyecto '%s' no ha sido definido.", dependsOn->id1);
+        reportError("Error: Project  '%s' has noot been defined.", dependsOn->id1);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    //Verificar que los proyectos tengan el mismo formato
+    // Verify that the projects have the same format
     if(project->format != projectData->format){
-        reportError("Error: El Proyecto '%s' no tiene el mismo formato que el proyecto '%s'.", dependsOn->id1, projectData->projectId);
+        reportError("Error: The Project '%s' does not have the same format as the project '%s'.", dependsOn->id1, projectData->projectId);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    //verificar que la tarea no depende de si misma
+    // Verify that the task does not depend on itself
     if(strcmp(dependsOn->id2, taskData->taskId) == 0 && strcmp(dependsOn->id1, projectData->projectId) == 0){
-        reportError("Error: La tarea '%s' depende de si misma", taskData->taskId);
+        reportError("Error: The task '%s' depends on itself", taskData->taskId);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    // Verificar que la tarea referenciada existe en el proyecto
+    // Verify that the referenced task exists in the project
     struct Task *task;
     HASH_FIND_STR(project->tasks, dependsOn->id2, task);
     if (task == NULL) {
-        reportError("Error: Tarea '%s' no encontrada en el proyecto '%s'.", dependsOn->id2, dependsOn->id1);
+        reportError("Error: Task '%s' not found in project '%s'.", dependsOn->id2, dependsOn->id1);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    //Verificar que la tarea empieza despues de la finalizacion de la tarea de la cual depende
+    // Verify that the task starts after the completion of the task it depends on
     if(projectData->format == DATE_TYPE){
         if(strcmp(taskData->start, task->finish) < 0){
-        reportError("Error: La tarea '%s' comienza antes que termine la tarea '%s' (de la cual depende)", taskData->taskId, dependsOn->id2);
+        reportError("Error: Task '%s' starts before task '%s' (which it depends on) ends.", taskData->taskId, dependsOn->id2);
         success = false;
         exit(EXIT_FAILURE);
         }
@@ -233,49 +231,49 @@ Type typecheckDependsOnId(DependsOnId *dependsOn, struct Project *projectData, s
     return success ? TASK_T : BOTTOM;
 }
 
-// Validación de las dependencias de una tarea
+// Validation of task dependencies
 Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, struct Project *projectData, struct Task *taskData) {
     if (taskOptionDependsOn == NULL) {
         return TASK_T;
     }
     bool success = true;
 
-    // Verificar que el proyecto referenciado existe en el programa
+    // Verify that the referenced project exists in the program
     struct Project *project;
     HASH_FIND_STR(projects, taskOptionDependsOn->id, project);
     if (project == NULL) {
-        reportError("Error: El Proyecto '%s' no ha sido definido.", taskOptionDependsOn->id);
+        reportError("Error: Project '%s' has not been defined.", taskOptionDependsOn->id);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    //Verificar que los proyectos tengan el mismo formato
+    // Verify that the projects have the same format
     if(project->format != projectData->format){
-        reportError("Error: El Proyecto '%s' no tiene el mismo formato que el proyecto '%s", taskOptionDependsOn->id, projectData->projectId);
+        reportError("Error: The Project '%s' does not have the same format as the project '%s'.", taskOptionDependsOn->id, projectData->projectId);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    //verificar que la tarea no depende de si misma
+    // Verify that the task does not depend on itself
     if(strcmp(taskOptionDependsOn->id2, taskData->taskId) == 0 && strcmp(taskOptionDependsOn->id, projectData->projectId) == 0){
-        reportError("Error: La tarea '%s' depende de si misma", taskData->taskId);
+        reportError("Error: The task '%s' depends on itself", taskData->taskId);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    // Verificar que la tarea referenciada existe en el proyecto
+    // Verify that the referenced task exists in the project
     struct Task *task;
     HASH_FIND_STR(project->tasks, taskOptionDependsOn->id2, task);
     if (task == NULL) {
-        reportError("Error: Tarea '%s' no encontrada en el proyecto '%s'.", taskOptionDependsOn->id2, taskOptionDependsOn->id);
+        reportError("Error: Task '%s' not found in project '%s'.", taskOptionDependsOn->id2, taskOptionDependsOn->id);
         success = false;
         exit(EXIT_FAILURE);
     }
 
-    //Verificar que la tarea empieza despues de la finalizacion de la tarea de la cual depende
+    // Verify that the task starts after the completion of the task it depends on
     if(projectData->format == DATE_TYPE){
         if(strcmp(taskData->start, task->finish) < 0){
-        reportError("Error: La tarea '%s' comienza antes que la tarea '%s' (de la cual depende)", taskData->taskId, taskOptionDependsOn->id2);
+        reportError("Error: Task '%s' starts before task '%s' (which it depends on) ends.", taskData->taskId, taskOptionDependsOn->id2);
         success = false;
         exit(EXIT_FAILURE);
         }
@@ -290,7 +288,7 @@ Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, stru
     return success ? TASK_T : BOTTOM;
 }
 
-// Validación de los opcionales de un proyecto
+// Validation of project optionals
 Type typecheckProjectOptionals(ProjectOptionals *optionals) {
     if (optionals == NULL) {
         return PROJECT_T;
@@ -313,22 +311,22 @@ Type typecheckProjectOptionals(ProjectOptionals *optionals) {
     return success ? PROJECT_T : BOTTOM;
 }
 
-// Validación de la unión de proyectos
+// Validation of project union
 Type typecheckProjectUnion(ProjectUnion *projectUnion) {
     if (projectUnion == NULL) {
         return PROJECT_T;
     }
 
-    // Verificar que el proyecto referenciado existe
+    // Verify that the referenced project exists
     struct Project *project;
     HASH_FIND_STR(projects, projectUnion->id, project);
     if (!project) {
-        reportError("Error: Proyecto '%s' no encontrado.", projectUnion->id);
+        reportError("Error: Project '%s' not found.", projectUnion->id);
         exit(EXIT_FAILURE);
         return BOTTOM;
     }
 
-    // Verificar recursivamente otros proyectos en la unión
+    // Recursively verify other projects in the union
     return typecheckProjectUnion(projectUnion->projectUnion);
 }
 
@@ -338,7 +336,7 @@ bool validateMaxTasks(ProjectBodyOptionals *optionals, struct Project *projectDa
     int taskCount = HASH_COUNT(projectData->tasks);
 
     if (taskCount > optionals->maxTasks->tasks) {
-        reportError("Error: Se excede la cantidad de tareas máximas permitidas en el proyecto '%s'.", projectData->projectId);
+        reportError("Error: The maximum number of tasks allowed in project '%s' is exceeded.", projectData->projectId);
         exit(EXIT_FAILURE);
         return false;
     }
@@ -356,7 +354,7 @@ bool validateMaxPoints(ProjectBodyOptionals *optionals, struct Project *projectD
     }
 
     if (totalPoints > optionals->maxPoints->points) {
-        reportError("Error: Se excede la cantidad de puntos máximos permitidos en el proyecto '%s'.", projectData->projectId);
+        reportError("Error: The maximum points allowed in project '%s' is exceeded.", projectData->projectId);
         exit(EXIT_FAILURE);
         return false;
     }
@@ -373,7 +371,7 @@ bool validateProjectReference(ProjectOptionals *projectOptionals) {
             case DEPENDS_ON_P:
                 HASH_FIND_STR(projects, projectOptionals->id1, referencedProject);
                 if (referencedProject == NULL) {
-                    reportError("Error: Proyecto '%s' no encontrado.", projectOptionals->id1);
+                    reportError("Error: Project '%s' not found.", projectOptionals->id1);
                     success = false;
                     exit(EXIT_FAILURE);
 
@@ -385,7 +383,7 @@ bool validateProjectReference(ProjectOptionals *projectOptionals) {
             case BOTH:
                 HASH_FIND_STR(projects, projectOptionals->id3, referencedProject);
                 if (referencedProject == NULL) {
-                    reportError("Error: Proyecto '%s' no encontrado.", projectOptionals->id3);
+                    reportError("Error: Project '%s' not found.", projectOptionals->id3);
                     success = false;
                     exit(EXIT_FAILURE);
 
@@ -398,7 +396,7 @@ bool validateProjectReference(ProjectOptionals *projectOptionals) {
     return success;
 }
 
-// Función para reportar errores
+// Function to report errors
 void reportError(const char *message, ...) {
     va_list args;
     va_start(args, message);
