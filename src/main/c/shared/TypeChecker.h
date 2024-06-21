@@ -20,7 +20,7 @@ bool validateMaxTasks(ProjectBodyOptionals *optionals, struct Project *projectDa
 bool validateMaxPoints(ProjectBodyOptionals *optionals, struct Project *projectData);
 bool validateProjectReference(ProjectOptionals *projectOptionals);
 
-// Declaraciones de funciones de type checking
+
 bool typecheckProgram(Program *program);
 Type typecheckProjectStructure(ProjectStructure *projectStructure);
 Type typecheckProjectBody(ProjectBody *projectBody, struct Project *projectData);
@@ -34,7 +34,6 @@ Type typecheckTaskOptionDependsOn(TaskOptionDependsOn *taskOptionDependsOn, stru
 Type typecheckProjectOptionals(ProjectOptionals *optionals);
 Type typecheckProjectUnion(ProjectUnion *projectUnion);
 
-// Función para reportar errores
 void reportError(const char *message, ...);
 
 #endif // TYPE_CHECKER_H
